@@ -7,25 +7,30 @@ using System.Threading.Tasks;
 
 namespace Vk_wf_app
 {
-    [JsonObject(MemberSerialization.OptIn)]
-    class VkUser
+    public class VkUser
     {
-        [JsonProperty("first_name", Required = Required.Always)]
+        // !!! Vk API v.3.0
+        // TODO: изменить версию API хотя бы до 5.60
+        // TODO: изменить структуру объектов Vk
+
         public string first_name { get; set; }
 
-        [JsonProperty("last_name", Required = Required.Always)]
         public string last_name { get; set; }
 
-        [JsonProperty("id", Required = Required.Always)]
-        public int id { get; set; }
+        public int uid { get; set; }
 
-        [JsonProperty("online", Required = Required.Always)]
+        public int user_id { get; set; }
+
         public int online { get; set; }
 
-        public VkUser()
-        {
+        //public string domain { get; set; }
 
-        }
+        //public City city { get; set; }
+    }
+    
+    public class ResponseWrap
+    {
+        public IList<VkUser> response { get; set; }
     }
 }
     

@@ -30,19 +30,19 @@ namespace Vk_wf_app
         public void action()
         {
             HttpRequest myreq = new HttpRequest();
-            myreq.AddUrlParam("user_ids", userId);
+            myreq.AddUrlParam("user_id", userId);
             myreq.AddUrlParam("access_token", accessToken);
             myreq.AddUrlParam("order", order);
             myreq.AddUrlParam("fields", "name");
+            // TODO: добавить поля
+            myreq.AddUrlParam("count", "2");
             string rez = myreq.Get(vkapi_url + "friends.get").ToString();
-
-            // зачем делать substring?
-            rez = rez.Substring(13, rez.Length - 15);
-
+            
             // (JSON) string -> VkUser
-            // this.userFriends = JsonConvert.DeserializeObject<List<VkUser>>(rez);
-
-
+            ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
+            MessageBox.Show("Response: " + rez +
+                            Environment.NewLine + "First friend's name: " + rw.response[0].first_name);
+            
         }
     }
 }
