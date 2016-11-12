@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace Vk_wf_app
 {
+
+    // Vk API v5.60
+    // TODO: загрузить структуру объектов Vk
+
     public class VkUser
     {
-        // !!! Vk API v.3.0
-        // TODO: изменить версию API хотя бы до 5.60
-        // TODO: изменить структуру объектов Vk
-
         public string first_name { get; set; }
 
         public string last_name { get; set; }
 
-        public int uid { get; set; }
-
-        public int user_id { get; set; }
+        public int id { get; set; }
 
         public int online { get; set; }
 
@@ -30,7 +28,15 @@ namespace Vk_wf_app
     
     public class ResponseWrap
     {
-        public IList<VkUser> response { get; set; }
+        public Response response { get; set; }
     }
+
+    public class Response
+    {
+        public int count;
+        public IList<VkUser> items { get; set; }
+    }
+
+
 }
     

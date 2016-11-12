@@ -14,7 +14,8 @@ namespace Vk_wf_app
         public static string vkapi_url = "https://api.vk.com/method/";
         private int userId;
         private string accessToken;
-        public List<VkUser> userFriends;
+        private string version = "5.60";
+        public IList<VkUser> userFriends;
         private string order = "hints";
         
 
@@ -30,18 +31,21 @@ namespace Vk_wf_app
         public void action()
         {
             HttpRequest myreq = new HttpRequest();
-            myreq.AddUrlParam("user_id", userId);
+
+            // Авторизация
             myreq.AddUrlParam("access_token", accessToken);
+            myreq.AddUrlParam("v", version);
+
+            myreq.AddUrlParam("user_id", userId);
+            
             myreq.AddUrlParam("order", order);
             myreq.AddUrlParam("fields", "name");
-            // TODO: добавить поля
-            myreq.AddUrlParam("count", "2");
+            // TODO: добавить необходимые поля
             string rez = myreq.Get(vkapi_url + "friends.get").ToString();
             
             // (JSON) string -> VkUser
             ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
-            MessageBox.Show("Response: " + rez +
-                            Environment.NewLine + "First friend's name: " + rw.response[0].first_name);
+            this.userFriends = rw.response.items;
             
         }
     }
