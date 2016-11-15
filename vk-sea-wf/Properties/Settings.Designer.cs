@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Vk_wf_app.Properties
+namespace vk_sea_wf.Properties
 {
 
 
