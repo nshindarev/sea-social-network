@@ -1,4 +1,4 @@
-﻿namespace Vk_wf_app
+﻿namespace vk_sea_wf
 {
     partial class AuthorizationForm
     {
@@ -37,7 +37,8 @@
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(1136, 1163);
+            this.webBrowser.ScrollBarsEnabled = false;
+            this.webBrowser.Size = new System.Drawing.Size(978, 1245);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
@@ -45,18 +46,19 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1136, 1163);
+            this.ClientSize = new System.Drawing.Size(978, 1245);
             this.Controls.Add(this.webBrowser);
+            this.MinimumSize = new System.Drawing.Size(1000, 1300);
             this.Name = "AuthorizationForm";
-            this.Text = "VK APPL";
-            this.Load += new System.EventHandler(this.authorizationForm_Load);
+            this.Text = "Identify Yourself";
+            this.Load += new System.EventHandler(this.NavigateAuthorization);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.WebBrowser webBrowser;
+        public System.Windows.Forms.WebBrowser webBrowser;
     }
 }
 
