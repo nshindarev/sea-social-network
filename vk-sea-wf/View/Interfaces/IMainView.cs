@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace vk_sea_wf.View.Interfaces
 {
-    public interface IMainView
-    {
+    public interface IMainView {
         void Show();
     }
 }

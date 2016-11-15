@@ -16,14 +16,14 @@ namespace vk_sea_wf
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+           // Application.EnableVisualStyles();
+           // Application.SetCompatibleTextRenderingDefault(false);
 
             AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
             AuthorizationFormPresenter presenter = new AuthorizationFormPresenter(webBrowserAuthorize, new MyParser());
-            Application.Run(webBrowserAuthorize);
+          //  Application.Run(webBrowserAuthorize);
           
-           // presenter.Run();
+            presenter.Run();
 
             /*AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
             AuthorizationFormPresenter presenter = new AuthorizationFormPresenter(webBrowserAuthorize, new MyParser());

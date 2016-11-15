@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace vk_sea_wf.Model.Class
 {
-    public class ResponseWrap
-    {
+    public class ResponseWrap {
         public IList<VkUser> response { get; set; }
     }
 }

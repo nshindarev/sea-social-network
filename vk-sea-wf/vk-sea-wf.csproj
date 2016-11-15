@@ -76,7 +76,6 @@
     </Compile>
     <Compile Include="View\Interfaces\IAuthorization.cs" />
     <Compile Include="View\Interfaces\IMainView.cs" />
-    <Compile Include="View\Interfaces\IView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

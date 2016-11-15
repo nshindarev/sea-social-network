@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace vk_sea_wf.View.CustomEventArgs
 {
-    class IdTokenEventArgs : EventArgs
-    {
+    class IdTokenEventArgs : EventArgs {
         public string access_token { get; set; }
         public int access_user_id { get; set; }
     }

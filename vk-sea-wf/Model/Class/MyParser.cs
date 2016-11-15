@@ -9,8 +9,7 @@ using xNet;
 
 namespace vk_sea_wf.Model.Class
 {
-    class MyParser : IParse
-    {
+    class MyParser : IParse {
         public static string api_url = "https://api.vk.com/";
         public static int app_id = 5677623;
 
@@ -22,8 +21,7 @@ namespace vk_sea_wf.Model.Class
         public ResponseWrap parser;
 
 
-        public enum VkontakteScopeList
-        {
+        public enum VkontakteScopeList {
             notify = 1,
             friends = 2,
             photos = 4,
@@ -53,22 +51,19 @@ namespace vk_sea_wf.Model.Class
             VkontakteScopeList.video |
             VkontakteScopeList.wall);
 
-        public int get_app_id
-        {
-            get
-            {
+        public int get_app_id {
+            get {
                 return app_id;
             }
         }
-        public int get_scope
-        {
-            get
-            {
+        public int get_scope {
+            get {
                 return scope;
             }
         }
-        public void parseInformation()
-        {
+
+        //сейчас метод запрашивает 100 друзей
+        public void parseInformation() {
             HttpRequest myreq = new HttpRequest();
             myreq.AddUrlParam("user_id", user_id);
             myreq.AddUrlParam("access_token", access_token);

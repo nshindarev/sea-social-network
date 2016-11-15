@@ -8,14 +8,14 @@ using vk_sea_wf.View.CustomEventArgs;
 
 namespace vk_sea_wf.View.Interfaces
 {
-    interface IAuthorization
-    { 
+    interface IAuthorization { 
 
         // вызываются при введении логина-пароля
         // вызов следующей формы
         void loadNextForm(IMainView MainView);
-        void Show();
+        void show();
 
+        // событие срабатывает при заполнении в web-browser логина и пароля
         event EventHandler<WebBrowserDocumentCompletedEventArgs> LogPassInsert;
     }
 }

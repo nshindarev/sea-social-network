@@ -13,17 +13,12 @@ namespace vk_sea_wf.Model.Class
         // TODO: изменить структуру объектов Vk
 
         public string first_name { get; set; }
-
         public string last_name { get; set; }
-
         public int uid { get; set; }
-
         public int user_id { get; set; }
-
         public int online { get; set; }
 
         //public string domain { get; set; }
-
         //public City city { get; set; }
     }
 
