@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("Vk_wf_app")]
+[assembly: AssemblyTitle("vk-sea-wf")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Vk_wf_app")]
+[assembly: AssemblyProduct("vk-sea-wf")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("85304bf5-38bb-404c-bae6-65ae116825f6")]
+[assembly: Guid("d1f41b2b-b11f-4a5e-8cfa-d6de80c0747f")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

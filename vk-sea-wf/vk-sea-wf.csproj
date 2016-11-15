@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{85304BF5-38BB-404C-BAE6-65AE116825F6}</ProjectGuid>
+    <ProjectGuid>{D1F41B2B-B11F-4A5E-8CFA-D6DE80C0747F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vk_wf_app</RootNamespace>
-    <AssemblyName>Vk_wf_app</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>vk_sea_wf</RootNamespace>
+    <AssemblyName>vk-sea-wf</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -54,28 +54,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizationForm.cs">
+    <Compile Include="Model\Class\MyParser.cs" />
+    <Compile Include="Model\Class\ResponseWrap.cs" />
+    <Compile Include="Model\Class\VkUser.cs" />
+    <Compile Include="Model\Interfaces\IParse.cs" />
+    <Compile Include="Presenter\AuthorizationFormPresenter.cs" />
+    <Compile Include="Presenter\CustomEventArgs\IdTokenEventArgs.cs" />
+    <Compile Include="View\Forms\AuthorizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AuthorizationForm.Designer.cs">
+    <Compile Include="View\Forms\AuthorizationForm.Designer.cs">
       <DependentUpon>AuthorizationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ParseFriendsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ParseFriendsForm.Designer.cs">
-      <DependentUpon>ParseFriendsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserFriendsParser.cs" />
-    <Compile Include="VkUser.cs" />
-    <EmbeddedResource Include="AuthorizationForm.resx">
-      <DependentUpon>AuthorizationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ParseFriendsForm.resx">
-      <DependentUpon>ParseFriendsForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="View\Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Interfaces\IAuthorization.cs" />
+    <Compile Include="View\Interfaces\IMainView.cs" />
+    <Compile Include="View\Interfaces\IView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -85,6 +86,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Forms\AuthorizationForm.resx">
+      <DependentUpon>AuthorizationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -99,6 +106,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
