@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 namespace vk_sea_wf.Model.Class
 {
     public class ResponseWrap {
-        public IList<VkUser> response { get; set; }
+        public Response response { get; set; }
     }
+        public class Response
+     {
+         public int count;
+         public IList<VkUser> items { get; set; }
+     }
 }

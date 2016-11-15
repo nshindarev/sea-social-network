@@ -12,12 +12,14 @@ namespace vk_sea_wf.Model.Class
     class MyParser : IParse {
         public static string api_url = "https://api.vk.com/";
         public static int app_id = 5677623;
+        public string version = "5.60";
 
-       
+
         public string order = "hints";
 
         public string access_token { get; set; }
-        public int user_id { get; set; }
+        public int userId { get; set; }
+        public IList<VkUser> userFriends;
         public ResponseWrap parser;
 
 
@@ -65,16 +67,18 @@ namespace vk_sea_wf.Model.Class
         //сейчас метод запрашивает 100 друзей
         public void parseInformation() {
             HttpRequest myreq = new HttpRequest();
-            myreq.AddUrlParam("user_id", user_id);
+            //Авторизация
             myreq.AddUrlParam("access_token", access_token);
+            myreq.AddUrlParam("v", version);
+            myreq.AddUrlParam("user_id", userId);
             myreq.AddUrlParam("order", order);
             myreq.AddUrlParam("fields", "name");
-            // TODO: добавить поляя
-            myreq.AddUrlParam("count", "100");
+            //Добавить необходимые поля
             string rez = myreq.Get(api_url + "friends.get").ToString();
 
             // (JSON) string -> VkUser
-            this.parser = JsonConvert.DeserializeObject<ResponseWrap>(rez);
+            ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
+            this.userFriends = rw.response.items;
            /* MessageBox.Show("Response: " + rez +
                             Environment.NewLine + "First friend's name: " + this.parser.response[0].first_name); */
         }

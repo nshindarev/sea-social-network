@@ -9,7 +9,7 @@ namespace vk_sea_wf.Model.Interfaces
     interface IParse {
         int get_app_id      { get;}
         int get_scope       { get;}
-        int user_id         { get; set; }
+        int userId         { get; set; }
         string access_token { get; set; }
 
         void parseInformation();

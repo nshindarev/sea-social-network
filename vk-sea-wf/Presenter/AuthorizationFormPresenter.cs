@@ -40,7 +40,7 @@ namespace vk_sea_wf.Presenter
         public void OnLogPassInserted(object sender, WebBrowserDocumentCompletedEventArgs e) {
             if (e.Url.ToString().IndexOf("access_token") != -1) {
                 ParseModel.access_token = "";
-                ParseModel.user_id = 0;
+                ParseModel.userId = 0;
 
                 Regex myReg = new Regex(@"(?<name>[\w\d\x5f]+)=(?<value>[^\x26\s]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 foreach (Match m in myReg.Matches(e.Url.ToString()))
@@ -49,7 +49,7 @@ namespace vk_sea_wf.Presenter
                         ParseModel.access_token = m.Groups["value"].Value;
                     }
                     else if (m.Groups["name"].Value == "user_id") {
-                        ParseModel.user_id = Convert.ToInt32(m.Groups["value"].Value);
+                        ParseModel.userId = Convert.ToInt32(m.Groups["value"].Value);
                     }
                     // еще можно запомнить срок жизни access_token - expires_in,
                     // если нужно
