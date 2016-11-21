@@ -11,7 +11,7 @@ using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf.View.Forms
 {
-    public partial class MainForm : Form, IMainView {
+    public partial class MainForm : Form, IView, IMainView {
 
         public void show() {
             this.show();

@@ -4,7 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.Model.Class;
+using vk_sea_wf.Model.Interfaces;
 using vk_sea_wf.Presenter;
+using vk_sea_wf.Presenter.Class;
+using vk_sea_wf.View.Forms;
+using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf
 {
@@ -19,15 +23,22 @@ namespace vk_sea_wf
            // Application.EnableVisualStyles();
            // Application.SetCompatibleTextRenderingDefault(false);
 
-            AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
+           /* AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
             AuthorizationFormPresenter presenter = new AuthorizationFormPresenter(webBrowserAuthorize, new MyParser());
-          //  Application.Run(webBrowserAuthorize);
-          
-            presenter.Run();
+            presenter.Run(); */
 
-            /*AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
-            AuthorizationFormPresenter presenter = new AuthorizationFormPresenter(webBrowserAuthorize, new MyParser());
-            presenter.Run();*/
+           
+              
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            var controller = new ApplicationController(new LightInjectAdapter())
+                .RegisterView<IAuthorization, AuthorizationForm>()
+                .RegisterView<IMainView, MainForm>()
+                .RegisterService<IParse, MyParser>()
+                .RegisterInstance(new ApplicationContext());
+
+            controller.Run<AuthorizationFormPresenter>();
         }
     }
 }

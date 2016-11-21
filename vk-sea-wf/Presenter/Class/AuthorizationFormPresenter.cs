@@ -7,17 +7,26 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.Model.Class;
 using vk_sea_wf.Model.Interfaces;
+using vk_sea_wf.Presenter.Interface;
 using vk_sea_wf.View.Forms;
 using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf.Presenter
 {
-    class AuthorizationFormPresenter {
+    class AuthorizationFormPresenter :IPresenter {
 
+        IApplicationController Controller { get; set; }
         IParse ParseModel;
         IAuthorization AuthorizationWindow;
 
         //TODO: протестировать конструкторы с 1 и 0 параметрами
+        public AuthorizationFormPresenter(IApplicationController Controller,IAuthorization AuthorizationWindow, IParse ParseModel) {
+            this.Controller = Controller;
+            this.ParseModel = ParseModel;
+            this.AuthorizationWindow = AuthorizationWindow;
+
+            AuthorizationWindow.LogPassInsert += new EventHandler<WebBrowserDocumentCompletedEventArgs>(OnLogPassInserted);
+        }
         public AuthorizationFormPresenter(IAuthorization AuthorizationWindow, IParse ParseModel) {
             this.ParseModel = ParseModel;
             this.AuthorizationWindow = AuthorizationWindow;
@@ -54,6 +63,7 @@ namespace vk_sea_wf.Presenter
                     // еще можно запомнить срок жизни access_token - expires_in,
                     // если нужно
                 }
+               // Controller.Run<IMainView>();
                 this.AuthorizationWindow.loadNextForm(new MainForm());
             }
         }

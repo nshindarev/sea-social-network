@@ -13,7 +13,7 @@ using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf
 {
-    public partial class AuthorizationForm: Form, IAuthorization {
+    public partial class AuthorizationForm: Form, IView, IAuthorization {
        
         public event EventHandler<WebBrowserDocumentCompletedEventArgs> LogPassInsert;
 

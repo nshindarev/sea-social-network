@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vk_sea_wf.View.Interfaces{
-    public interface IMainView: IView {
+namespace vk_sea_wf.View.Interfaces {
+    public interface IView {
         void Show();
     }
 }

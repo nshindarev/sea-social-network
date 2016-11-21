@@ -8,7 +8,7 @@ using vk_sea_wf.View.CustomEventArgs;
 
 namespace vk_sea_wf.View.Interfaces
 {
-    interface IAuthorization { 
+    interface IAuthorization : IView{ 
 
         // вызываются при введении логина-пароля
         // вызов следующей формы

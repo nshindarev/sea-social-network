@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LightInject, Version=4.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.4.1.4\lib\net46\LightInject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -56,10 +60,17 @@
   <ItemGroup>
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\ResponseWrap.cs" />
+    <Compile Include="Model\Class\User.cs" />
     <Compile Include="Model\Class\VkUser.cs" />
     <Compile Include="Model\Interfaces\IParse.cs" />
-    <Compile Include="Presenter\AuthorizationFormPresenter.cs" />
+    <Compile Include="Presenter\Class\ApplicationController.cs" />
+    <Compile Include="Presenter\Class\AuthorizationFormPresenter.cs" />
+    <Compile Include="Presenter\Class\LightInjectAdapter.cs" />
     <Compile Include="Presenter\CustomEventArgs\IdTokenEventArgs.cs" />
+    <Compile Include="Presenter\Interface\IApplicationController.cs" />
+    <Compile Include="Presenter\Interface\IContainer.cs" />
+    <Compile Include="Presenter\Interface\IPresenter.cs" />
+    <Compile Include="Presenter\Class\MainFormPresenter.cs" />
     <Compile Include="View\Forms\AuthorizationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +87,7 @@
     </Compile>
     <Compile Include="View\Interfaces\IAuthorization.cs" />
     <Compile Include="View\Interfaces\IMainView.cs" />
+    <Compile Include="View\Interfaces\IView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
