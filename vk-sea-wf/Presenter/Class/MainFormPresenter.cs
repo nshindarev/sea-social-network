@@ -9,20 +9,20 @@ using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf.Presenter {
     class MainFormPresenter :IPresenter {
-        IView View;
+ 
         IParse ParseModel;
-        IView MainForm;
+        IMainView MainForm;
 
         public MainFormPresenter(IApplicationController Controller,
-            IAuthorization AuthorizationWindow,
+            IMainView MainForm,
             IParse ParseModel) {
 
-            this.View = View;
+            this.MainForm = MainForm;
             this.ParseModel = ParseModel;
             this.MainForm = MainForm;
         }
         public void Run() {
-            this.View.Show();
+            this.MainForm.Show();
         }
     }
 }

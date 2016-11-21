@@ -63,9 +63,8 @@ namespace vk_sea_wf.Presenter
                     // еще можно запомнить срок жизни access_token - expires_in,
                     // если нужно
                 }
-               // Controller.Run<IMainView>();
-                this.AuthorizationWindow.loadNextForm(new MainForm());
-            }
+                Controller.Run<MainFormPresenter>();
+                }
         }
        
     }
