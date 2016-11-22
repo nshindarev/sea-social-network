@@ -20,8 +20,12 @@ namespace vk_sea_wf
         public AuthorizationForm(){
             InitializeComponent();
         }
+        
         public void show(){
-            Application.Run(this);
+            // используется для возможности переключения контекста работы приложения
+            // (чтобы закрыть форму Логина-Пароля без закрытия самого приложения)
+            Program.Context.MainForm = this;
+            Application.Run(Program.Context);
         }
 
        
@@ -37,8 +41,6 @@ namespace vk_sea_wf
             webBrowser.Navigate(String.Format("https://api.vk.com/oauth/authorize?client_id={0}&scope={1}&display=popup&response_type=token",
               MyParser.app_id, MyParser.scope));
         }
-        public void loadNextForm(IMainView MainForm) {
-            MainForm.Show();
-        }
+      
     }
 }

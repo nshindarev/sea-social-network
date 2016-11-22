@@ -11,8 +11,6 @@ namespace vk_sea_wf.View.Interfaces
     interface IAuthorization : IView{ 
 
         // вызываются при введении логина-пароля
-        // вызов следующей формы
-        void loadNextForm(IMainView MainView);
         void show();
 
         // событие срабатывает при заполнении в web-browser логина и пароля

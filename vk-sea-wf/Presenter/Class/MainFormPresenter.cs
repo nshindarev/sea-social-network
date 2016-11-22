@@ -9,7 +9,8 @@ using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf.Presenter {
     class MainFormPresenter :IPresenter {
- 
+
+        IApplicationController Controller;
         IParse ParseModel;
         IMainView MainForm;
 
@@ -19,10 +20,10 @@ namespace vk_sea_wf.Presenter {
 
             this.MainForm = MainForm;
             this.ParseModel = ParseModel;
-            this.MainForm = MainForm;
+            this.Controller = Controller;
         }
         public void Run() {
-            this.MainForm.Show();
+            this.MainForm.show();
         }
     }
 }

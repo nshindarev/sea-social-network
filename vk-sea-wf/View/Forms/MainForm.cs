@@ -14,11 +14,11 @@ namespace vk_sea_wf.View.Forms
     public partial class MainForm : Form, IView, IMainView {
 
         public void show() {
-            this.show();
+            Program.Context.MainForm = this;
+            this.Show();
         }
         public MainForm() {
             InitializeComponent();
-           // Application.Run(this);
         }
     }
 }

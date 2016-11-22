@@ -14,6 +14,8 @@ namespace vk_sea_wf
 {
     static class Program
     {
+        public static readonly ApplicationContext Context = new ApplicationContext();
+
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
@@ -26,8 +28,6 @@ namespace vk_sea_wf
            /* AuthorizationForm webBrowserAuthorize = new AuthorizationForm();
             AuthorizationFormPresenter presenter = new AuthorizationFormPresenter(webBrowserAuthorize, new MyParser());
             presenter.Run(); */
-
-           
               
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
