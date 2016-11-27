@@ -4,23 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using vk_sea_wf.Model.Interfaces;
 using xNet;
 
 namespace vk_sea_wf.Model.Class
 {
-    class MyParser : IParse {
+      class MyParser : IParse {
         public static string api_url = "https://api.vk.com/";
         public static int app_id = 5677623;
         public string version = "5.60";
 
 
         public string order = "hints";
-
-        public string access_token { get; set; }
-        public int userId { get; set; }
-        public IList<VkUser> userFriends;
-        public ResponseWrap parser;
+        public IList<VkUser> user_friends { get; set; }
 
 
         public enum VkontakteScopeList {
@@ -64,21 +61,32 @@ namespace vk_sea_wf.Model.Class
             }
         }
 
-        //сейчас метод запрашивает 100 друзей
+    
         public void parseInformation() {
             HttpRequest myreq = new HttpRequest();
+
+            //TODO: убрать!!!
+            String s = AuthorizatedInfo.access_token;
+            int n = AuthorizatedInfo.userId;
             //Авторизация
-            myreq.AddUrlParam("access_token", access_token);
+            myreq.AddUrlParam("access_token", AuthorizatedInfo.access_token);
             myreq.AddUrlParam("v", version);
-            myreq.AddUrlParam("user_id", userId);
+            myreq.AddUrlParam("user_id", AuthorizatedInfo.userId);
             myreq.AddUrlParam("order", order);
             myreq.AddUrlParam("fields", "name");
             //Добавить необходимые поля
-            string rez = myreq.Get(api_url + "friends.get").ToString();
-
-            // (JSON) string -> VkUser
-            ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
-            this.userFriends = rw.response.items;
+            try {
+                string uri = api_url + "friends.get";
+                string rez = myreq.Get(api_url + "friends.get/").ToString();
+               
+                // (JSON) string -> VkUser
+                ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
+                this.user_friends = rw.response.items;
+            }
+            catch (HttpException ex) {
+                MessageBox.Show(ex.ToString());
+            }
+         
            /* MessageBox.Show("Response: " + rez +
                             Environment.NewLine + "First friend's name: " + this.parser.response[0].first_name); */
         }

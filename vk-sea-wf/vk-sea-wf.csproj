@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Class\AuthorizatedInfo.cs" />
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\ResponseWrap.cs" />
     <Compile Include="Model\Class\User.cs" />
