@@ -9,6 +9,7 @@ using vk_sea_wf.Model.Interfaces;
 using vk_sea_wf.Presenter.Interface;
 using vk_sea_wf.View.Interfaces;
 using System.Windows.Forms;
+using VkNet.Model;
 
 namespace vk_sea_wf.Presenter {
     class MainFormPresenter :IPresenter {
@@ -41,12 +42,7 @@ namespace vk_sea_wf.Presenter {
             }*/
 
             this.ParseModel.parseInformation();
-
-            List<String> user_friends = new List<string>(this.ParseModel.user_friends.Count);
-            foreach (VkUser user in this.ParseModel.user_friends)
-                user_friends.Add(user.first_name + user.last_name);
-
-            this.MainForm.fillInHTTPAnswer(user_friends);
+            this.MainForm.fillInHTTPAnswer(this.ParseModel.user_friends);
         }
     }
 }

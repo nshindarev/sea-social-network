@@ -7,12 +7,12 @@ using vk_sea_wf.Model.Class;
 
 namespace vk_sea_wf.Model.Interfaces
 { 
-    interface IParse {
+    public interface IParse {
         int get_app_id      { get;}
         int get_scope       { get;}
 
         //TODO: убрать зависимость с классом VkUser
-        IList<VkUser> user_friends { get; set; }
+        IList<String> user_friends { get;}
 
         void parseInformation();
     }

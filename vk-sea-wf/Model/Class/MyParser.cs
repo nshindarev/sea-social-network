@@ -6,6 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.Model.Interfaces;
+using VkNet.Enums.Filters;
+using VkNet.Enums.SafetyEnums;
+using VkNet.Model;
+using VkNet.Model.RequestParams;
+using VkNet.Utils;
 using xNet;
 
 namespace vk_sea_wf.Model.Class
@@ -15,11 +20,17 @@ namespace vk_sea_wf.Model.Class
         public static int app_id = 5677623;
         public string version = "5.60";
 
+        public FriendsOrder order = new FriendsOrder();
+        public List<User> users { get; set; }
+        public List<String> userFriends { get; set; }
+        
 
-        public string order = "hints";
-        public IList<VkUser> user_friends { get; set; }
-
-
+        public IList<string> user_friends {
+            get
+            {
+                return this.userFriends;
+            }
+        }
         public enum VkontakteScopeList {
             notify = 1,
             friends = 2,
@@ -35,7 +46,6 @@ namespace vk_sea_wf.Model.Class
             wall = 8192,
             docs = 131072
         }
-
         public static int scope = (int)(VkontakteScopeList.audio |
             VkontakteScopeList.docs |
             VkontakteScopeList.friends |
@@ -61,34 +71,24 @@ namespace vk_sea_wf.Model.Class
             }
         }
 
-    
-        public void parseInformation() {
-            HttpRequest myreq = new HttpRequest();
 
-            //TODO: убрать!!!
-            String s = AuthorizatedInfo.access_token;
-            int n = AuthorizatedInfo.userId;
-            //Авторизация
-            myreq.AddUrlParam("access_token", AuthorizatedInfo.access_token);
-            myreq.AddUrlParam("v", version);
-            myreq.AddUrlParam("user_id", AuthorizatedInfo.userId);
-            myreq.AddUrlParam("order", order);
-            myreq.AddUrlParam("fields", "name");
-            //Добавить необходимые поля
-            try {
-                string uri = api_url + "friends.get";
-                string rez = myreq.Get(api_url + "friends.get/").ToString();
-               
-                // (JSON) string -> VkUser
-                ResponseWrap rw = JsonConvert.DeserializeObject<ResponseWrap>(rez);
-                this.user_friends = rw.response.items;
-            }
-            catch (HttpException ex) {
-                MessageBox.Show(ex.ToString());
-            }
+        public void parseInformation() {
+
+            this.users = new List<User>();
+            this.userFriends = new List<string>();
+            
+
+            this.users = VkApiHolder.Api.Friends.Get(new FriendsGetParams {
+                UserId = AuthorizatedInfo.userId,
+                Order = FriendsOrder.Hints,
+                Fields = (ProfileFields) (ProfileFields.FirstName| 
+                                          ProfileFields.LastName)
          
-           /* MessageBox.Show("Response: " + rez +
-                            Environment.NewLine + "First friend's name: " + this.parser.response[0].first_name); */
+            }).ToList<User>();
+            
+            foreach (User user in users) {
+                this.userFriends.Add(user.FirstName);
+            }
         }
     }
 }

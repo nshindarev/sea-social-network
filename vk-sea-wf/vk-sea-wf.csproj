@@ -69,7 +69,6 @@
     <Compile Include="Model\Class\AuthorizatedInfo.cs" />
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\ResponseWrap.cs" />
-    <Compile Include="Model\Class\User.cs" />
     <Compile Include="Model\Class\VkUser.cs" />
     <Compile Include="Model\Interfaces\IParse.cs" />
     <Compile Include="Presenter\Class\ApplicationController.cs" />
@@ -97,7 +96,7 @@
     <Compile Include="View\Interfaces\IAuthorization.cs" />
     <Compile Include="View\Interfaces\IMainView.cs" />
     <Compile Include="View\Interfaces\IView.cs" />
-    <Compile Include="VkApiHolder.cs" />
+    <Compile Include="Model\Class\VkApiHolder.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

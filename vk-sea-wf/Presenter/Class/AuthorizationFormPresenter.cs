@@ -63,6 +63,7 @@ namespace vk_sea_wf.Presenter
                     // еще можно запомнить срок жизни access_token - expires_in,
                     // если нужно
                 }
+                VkApiHolder.Api.Authorize(AuthorizatedInfo.access_token);
                 Controller.Run<MainFormPresenter>();
                 }
         }
