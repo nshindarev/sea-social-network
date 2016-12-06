@@ -13,6 +13,7 @@ namespace vk_sea_wf.Model.Interfaces
 
         //TODO: убрать зависимость с классом VkUser
         IList<String> user_friends { get;}
+        IList<List<String>> user_sub_friends { get; }
 
         void parseInformation();
     }

@@ -9,7 +9,7 @@ namespace vk_sea_wf.View.Interfaces{
     public interface IMainView: IView {
         
         void show();
-        void fillInHTTPAnswer(IList<String> user_friends);
+        void fillInHTTPAnswer(IList<String> user_friends,IList<List<String>> user_sub_friends);
 
         event EventHandler<EventArgs> findFriendsItemClicked;
     }

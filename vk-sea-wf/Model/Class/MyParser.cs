@@ -23,12 +23,19 @@ namespace vk_sea_wf.Model.Class
         public FriendsOrder order = new FriendsOrder();
         public List<User> users { get; set; }
         public List<String> userFriends { get; set; }
+        public List<List<String>> userSubFriends { get; set; }
         
 
         public IList<string> user_friends {
             get
             {
                 return this.userFriends;
+            }
+        }
+        public IList<List<string>> user_sub_friends {
+            get
+            {
+                return this.userSubFriends;
             }
         }
         public enum VkontakteScopeList {
@@ -76,18 +83,50 @@ namespace vk_sea_wf.Model.Class
 
             this.users = new List<User>();
             this.userFriends = new List<string>();
-            
+            this.userSubFriends = new List<List<string>>();
+
 
             this.users = VkApiHolder.Api.Friends.Get(new FriendsGetParams {
                 UserId = AuthorizatedInfo.userId,
-                Order = FriendsOrder.Hints,
-                Fields = (ProfileFields) (ProfileFields.FirstName| 
-                                          ProfileFields.LastName)
+                 Order = FriendsOrder.Hints,
+                Fields = (ProfileFields) (ProfileFields.All)
+               /* Fields = (ProfileFields) (ProfileFields.FirstName| 
+                                            ProfileFields.LastName)*/
          
             }).ToList<User>();
-            
+
+
+            this.userSubFriends = new List<List<string>>();
+            for (int i = 0; i < this.users.Count; i++)
+            {
+                this.userSubFriends.Add(new List<string>());
+            }
             foreach (User user in users) {
-                this.userFriends.Add(user.FirstName);
+                this.userSubFriends[users.IndexOf(user)] = new List<string>();
+                List<User> cur_user = new List<User>();
+                try
+                {
+                    cur_user = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+                    {
+                        UserId = user.Id,
+                        Order = FriendsOrder.Hints,
+                        Fields = (ProfileFields)(ProfileFields.FirstName |
+                                                  ProfileFields.LastName)
+
+                    }).ToList<User>();
+                }
+                catch (Exception ex)
+                {
+                 
+                }
+                this.userFriends.Add(user.FirstName + " " +  
+                                     user.LastName );
+                foreach (User _user in cur_user)
+                {
+                    this.userSubFriends[this.userFriends.IndexOf(user.FirstName + " " +
+                                                                 user.LastName)].Add(_user.FirstName + " " +
+                                                                                     _user.LastName);
+                }
             }
         }
     }

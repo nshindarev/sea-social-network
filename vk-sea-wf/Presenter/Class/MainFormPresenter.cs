@@ -42,7 +42,7 @@ namespace vk_sea_wf.Presenter {
             }*/
 
             this.ParseModel.parseInformation();
-            this.MainForm.fillInHTTPAnswer(this.ParseModel.user_friends);
+            this.MainForm.fillInHTTPAnswer(this.ParseModel.user_friends, this.ParseModel.user_sub_friends);
         }
     }
 }
