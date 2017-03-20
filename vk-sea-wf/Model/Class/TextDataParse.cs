@@ -67,8 +67,8 @@ namespace vk_sea_wf.Model.Class
 
         public void parseInformation() {
 
-            uint countPerUser = 1;
-            uint maxCount = 5;
+            uint countPerUser = 20;
+            uint maxCount = 600;
 
             uint j = 0;
             bool stop = false;
@@ -77,21 +77,25 @@ namespace vk_sea_wf.Model.Class
             {
                 UserId = AuthorizatedInfo.userId,
                 Order = FriendsOrder.Hints,
-                Fields = ProfileFields.Uid
+                Fields = ProfileFields.IsFriend
 
             }).ToList();
+            
+            // Удалить забаненных
+            this.userFriends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
 
             string fileName = @"C:\data.txt";
             using (StreamWriter sw = new StreamWriter(fileName))            
             {
                 foreach (User user in userFriends)
-                {
+                {               
                     uint i = 0;
 
                     List<Post> posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
                     {
                         OwnerId = user.Id,
-                        Count = countPerUser
+                        Count = countPerUser,
+                        Filter = WallFilter.Owner
                     }).WallPosts.ToList();
 
                     foreach (Post post in posts)
@@ -119,6 +123,8 @@ namespace vk_sea_wf.Model.Class
                     }
 
                     if (stop) break;
+
+                    System.Threading.Thread.Sleep(200);
                 }
             }
             

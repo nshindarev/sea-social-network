@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -57,7 +61,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="VkNet, Version=1.21.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VkNet.1.25.0\lib\net40\VkNet.dll</HintPath>
+      <HintPath>..\packages\VkNet.1.27.0\lib\net40\VkNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xNet, Version=3.3.3.0, Culture=neutral, processorArchitecture=MSIL">
