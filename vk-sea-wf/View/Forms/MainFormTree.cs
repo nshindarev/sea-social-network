@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.View.Interfaces;
 
-namespace vk_sea_wf.View.Forms
-{
-    public partial class MainForm : Form, IView, IMainView {
-
+namespace vk_sea_wf.View.Forms {
+    public partial class MainFormTree :Form, IView, IMainView {
         //events
         public event EventHandler<EventArgs> findFriendsItemClicked;
 
@@ -21,24 +19,31 @@ namespace vk_sea_wf.View.Forms
             Program.Context.MainForm = this;
             this.Show();
         }
-
-        //consrtuctor 
-        public MainForm() {
+        public MainFormTree() {
             InitializeComponent();
         }
 
-        
         private void findToolStripMenuItem_Click(object sender, EventArgs e) {
             if (findFriendsItemClicked != null)
                 findFriendsItemClicked(this, e);
         }
-
         public void fillInHTTPAnswer(IList<String> answer, IList<List<String>> sub_answer) {
+            this.treeView.Nodes.Clear();
 
-            this.listBox.Items.Clear();
-            foreach(String s in answer) {
-                this.listBox.Items.Add(s);
+            for (int i = 0; i < answer.Count; i++)
+            {
+                this.treeView.Nodes.Add(answer[i]);
+                foreach (String s in sub_answer[i])
+                {
+                    this.treeView.Nodes[i].Nodes.Add(s);
+                }
             }
+            
+            /*
+            this.listBox.Items.Clear();
+            foreach (String s in answer) {
+                this.listBox.Items.Add(s);
+            }*/
         }
     }
 }

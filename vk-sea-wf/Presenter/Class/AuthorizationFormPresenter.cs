@@ -25,13 +25,13 @@ namespace vk_sea_wf.Presenter
             this.ParseModel = ParseModel;
             this.AuthorizationWindow = AuthorizationWindow;
 
-            AuthorizationWindow.LogPassInsert += new EventHandler<WebBrowserDocumentCompletedEventArgs>(OnLogPassInserted);
+            AuthorizationWindow.LogPassInsert += new EventHandler<WebBrowserDocumentCompletedEventArgs>(onLogPassInserted);
         }
         public AuthorizationFormPresenter(IAuthorization AuthorizationWindow, IParse ParseModel) {
             this.ParseModel = ParseModel;
             this.AuthorizationWindow = AuthorizationWindow;
 
-            AuthorizationWindow.LogPassInsert += new EventHandler<WebBrowserDocumentCompletedEventArgs>(OnLogPassInserted);
+            AuthorizationWindow.LogPassInsert += new EventHandler<WebBrowserDocumentCompletedEventArgs>(onLogPassInserted);
         }
         public AuthorizationFormPresenter(IAuthorization AuthorizationWindow): this (AuthorizationWindow, new MyParser()) {
         }
@@ -46,23 +46,24 @@ namespace vk_sea_wf.Presenter
         }
         // по событию передаем в model access_token и user_id
         // передача управления в MainForm
-        public void OnLogPassInserted(object sender, WebBrowserDocumentCompletedEventArgs e) {
+        public void onLogPassInserted(object sender, WebBrowserDocumentCompletedEventArgs e) {
             if (e.Url.ToString().IndexOf("access_token") != -1) {
-                ParseModel.access_token = "";
-                ParseModel.userId = 0;
+                String access_token = "";
+                AuthorizatedInfo.userId = 0;
 
                 Regex myReg = new Regex(@"(?<name>[\w\d\x5f]+)=(?<value>[^\x26\s]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 foreach (Match m in myReg.Matches(e.Url.ToString()))
                 {
                     if (m.Groups["name"].Value == "access_token") {
-                        ParseModel.access_token = m.Groups["value"].Value;
+                        access_token = m.Groups["value"].Value;
                     }
                     else if (m.Groups["name"].Value == "user_id") {
-                        ParseModel.userId = Convert.ToInt32(m.Groups["value"].Value);
+                        AuthorizatedInfo.userId = Convert.ToInt32(m.Groups["value"].Value);
                     }
                     // еще можно запомнить срок жизни access_token - expires_in,
                     // если нужно
                 }
+                VkApiHolder.Api.Authorize(access_token);
                 Controller.Run<MainFormPresenter>();
                 }
         }

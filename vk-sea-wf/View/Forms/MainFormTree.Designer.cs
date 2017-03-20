@@ -1,7 +1,5 @@
-﻿namespace vk_sea_wf.View.Forms
-{
-    partial class MainForm
-    {
+﻿namespace vk_sea_wf.View.Forms {
+    partial class MainFormTree {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -11,10 +9,8 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -26,32 +22,29 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            this.listBox = new System.Windows.Forms.ListBox();
+        private void InitializeComponent() {
+            this.treeView = new System.Windows.Forms.TreeView();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listBox
+            // treeView
             // 
-            this.listBox.FormattingEnabled = true;
-            this.listBox.ItemHeight = 20;
-            this.listBox.Location = new System.Drawing.Point(0, 36);
-            this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(768, 804);
-            this.listBox.TabIndex = 0;
+            this.treeView.Location = new System.Drawing.Point(0, 36);
+            this.treeView.Name = "treeView";
+            this.treeView.Size = new System.Drawing.Size(709, 831);
+            this.treeView.TabIndex = 0;
             // 
-            // menuStrip1
+            // menuStrip
             // 
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.findToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip1";
-            this.menuStrip.Size = new System.Drawing.Size(770, 33);
-            this.menuStrip.TabIndex = 1;
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(710, 33);
+            this.menuStrip.TabIndex = 2;
             this.menuStrip.Text = "menuStrip1";
             // 
             // findToolStripMenuItem
@@ -61,18 +54,15 @@
             this.findToolStripMenuItem.Text = "Find My Friends";
             this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
             // 
-            // MainForm
+            // MainFormTree
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(770, 840);
-            this.Controls.Add(this.listBox);
+            this.ClientSize = new System.Drawing.Size(710, 863);
             this.Controls.Add(this.menuStrip);
-            this.MainMenuStrip = this.menuStrip;
-            this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Controls.Add(this.treeView);
+            this.Name = "MainFormTree";
+            this.Text = "MainFormTree";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -81,8 +71,9 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.TreeView treeView;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
-        public System.Windows.Forms.ListBox listBox;
     }
 }
