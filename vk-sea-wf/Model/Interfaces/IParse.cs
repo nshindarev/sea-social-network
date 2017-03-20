@@ -12,8 +12,7 @@ namespace vk_sea_wf.Model.Interfaces
         int get_scope       { get;}
 
         //TODO: убрать зависимость с классом VkUser
-        IList<String> user_friends { get;}
-        IList<List<String>> user_sub_friends { get; }
+        // тут были какие-то поля, мне пришлось их убрать
 
         void parseInformation();
     }

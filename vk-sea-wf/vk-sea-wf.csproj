@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Class\AuthorizatedInfo.cs" />
+    <Compile Include="Model\Class\TextDataParse.cs" />
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\StudyDecisionTree.cs" />
     <Compile Include="Model\Interfaces\IParse.cs" />
@@ -101,6 +102,12 @@
     <Compile Include="View\Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Forms\MainFormParseText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Forms\MainFormParseText.Designer.cs">
+      <DependentUpon>MainFormParseText.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Forms\MainFormTree.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Forms\MainFormParseText.resx">
+      <DependentUpon>MainFormParseText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Forms\MainFormTree.resx">
       <DependentUpon>MainFormTree.cs</DependentUpon>
