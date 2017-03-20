@@ -77,10 +77,7 @@ namespace vk_sea_wf.Model.Class
             {
                 UserId = AuthorizatedInfo.userId,
                 Order = FriendsOrder.Hints,
-                Count = 5,
-                Fields = ProfileFields.All
-                /* Fields = (ProfileFields) (ProfileFields.FirstName| 
-                                             ProfileFields.LastName)*/
+                Fields = ProfileFields.Uid
 
             }).ToList();
 
