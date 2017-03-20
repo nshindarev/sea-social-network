@@ -1,17 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using vk_sea_wf.Model.Interfaces;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
-using VkNet.Utils;
-using xNet;
+using System.IO;
 
 namespace vk_sea_wf.Model.Class
 {
@@ -73,33 +67,64 @@ namespace vk_sea_wf.Model.Class
 
         public void parseInformation() {
 
-            uint countPerUser = 10;
-            uint maxCount = 500;
+            uint countPerUser = 1;
+            uint maxCount = 5;
 
-            this.userFriends = VkApiHolder.Api.Friends.Get(new FriendsGetParams {
+            uint j = 0;
+            bool stop = false;
+
+            this.userFriends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+            {
                 UserId = AuthorizatedInfo.userId,
-                 Order = FriendsOrder.Hints,
+                Order = FriendsOrder.Hints,
+                Count = 5,
                 Fields = ProfileFields.All
                 /* Fields = (ProfileFields) (ProfileFields.FirstName| 
                                              ProfileFields.LastName)*/
 
             }).ToList();
 
-            foreach (User user in userFriends)
+            string fileName = @"C:\data.txt";
+            using (StreamWriter sw = new StreamWriter(fileName))            
             {
-                List<Post> posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
+                foreach (User user in userFriends)
                 {
-                    OwnerId = user.Id,
-                    Count = countPerUser
-                }).WallPosts.ToList();
+                    uint i = 0;
 
-                foreach (Post post in posts)
-                {
-                    // TODO: парсить тексты, сохранять в файл
-                    // TODO: счётчик постов, остановка при определённом количестве
-                    // TODO: проверка дублирования
+                    List<Post> posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
+                    {
+                        OwnerId = user.Id,
+                        Count = countPerUser
+                    }).WallPosts.ToList();
+
+                    foreach (Post post in posts)
+                    {
+                        // TODO: проверка дублирования
+                        string s = post.Text + " ";
+                        if (post.CopyHistory.Count != 0)
+                        {
+                            s += post.CopyHistory.First().Text;
+                        }
+                        s = s.Replace(System.Environment.NewLine, " ").Replace("\"", "").Trim();
+                        if (s == string.Empty) break;
+
+                        sw.WriteLine(s);
+                        sw.WriteLine();
+
+                        // Остановка после достижения пределов
+                        i++; j++;
+                        if (countPerUser < i) break;
+                        if (maxCount < j)
+                        {
+                            stop = true;
+                            break;
+                        }
+                    }
+
+                    if (stop) break;
                 }
             }
+            
         }
     }
 }
