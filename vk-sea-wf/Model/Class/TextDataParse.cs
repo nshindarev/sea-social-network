@@ -6,6 +6,7 @@ using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
 using System.IO;
+using KBCsv;
 
 namespace vk_sea_wf.Model.Class
 {
@@ -84,11 +85,22 @@ namespace vk_sea_wf.Model.Class
             // Удалить забаненных
             this.userFriends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
 
-            string fileName = @"C:\data.txt";
-            using (StreamWriter sw = new StreamWriter(fileName))            
+            string fileName = @"C:\data.csv";
+            using (StreamWriter sw = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+            using (CsvWriter writer = new CsvWriter(sw))
             {
+                writer.ForceDelimit = true;
+                writer.ValueSeparator = ';';
+                writer.ValueDelimiter = '\'';
+                writer.WriteRecord(
+                    "text", 
+                    "v_info_imprudence", 
+                    "v_weak_password", 
+                    "v_tech_negligence",
+                    "v_inexperience",
+                    "v_illiteracy");
                 foreach (User user in userFriends)
-                {               
+                {
                     uint i = 0;
 
                     List<Post> posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
@@ -106,11 +118,16 @@ namespace vk_sea_wf.Model.Class
                         {
                             s += post.CopyHistory.First().Text;
                         }
-                        s = s.Replace(System.Environment.NewLine, " ").Replace("\"", "").Trim();
-                        if (s == string.Empty) break;
+                        s = s.Replace(System.Environment.NewLine, " ")
+                            .Replace("\n", " ")
+                            .Replace("\r", " ")
+                            .Replace("\"", "")
+                            .Replace(";",",")
+                            .Trim();
+                        if (s == string.Empty) continue;
 
-                        sw.WriteLine(s);
-                        sw.WriteLine();
+                        // Запись в файл
+                        writer.WriteRecord(s, "0", "0", "0", "0", "0");
 
                         // Остановка после достижения пределов
                         i++; j++;
