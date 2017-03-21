@@ -9,23 +9,26 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.View.Interfaces;
 
-namespace vk_sea_wf.View
+namespace vk_sea_wf.View.Forms
 {
     public partial class CompanyInfoForm : Form, IView, ICompanyInfo
     {
 
         //events
         public event EventHandler<EventArgs> btnStudyDatasetClicked;
-        public Dictionary<string,string> getCompanyInfo {
-            get { Dictionary<string,string> VKData = new Dictionary<string, string>();
-                VKData.Add("VK", this.txtBoxVk.ToString());
-                return VKData; }
+        public string getCompanyInfo {
+            get {
+                return this.txtBoxVk.ToString();
+            }
         }
         public CompanyInfoForm()
         {
             InitializeComponent();
         }
-
+        public void show()
+        {
+            this.Show();
+        }
         private void btnStudy_Click(object sender, EventArgs e)
         {
             if (btnStudyDatasetClicked != null)

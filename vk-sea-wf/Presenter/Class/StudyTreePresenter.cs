@@ -9,7 +9,7 @@ using vk_sea_wf.View.Interfaces;
 
 namespace vk_sea_wf.Presenter.Class
 {
-    class StudyTreePresenter
+    class StudyTreePresenter: IPresenter
     {
         IApplicationController Controller;
         ICompanyInfo CompanyInfoForm;
@@ -29,7 +29,14 @@ namespace vk_sea_wf.Presenter.Class
         public void onbtnStudyClick(object sender, EventArgs e)
         {
             //TODO: расширить функционал передачи словаря до нескольких соцсетей
-            this.StudyDecisionTree.SocialNetworkIds = this.CompanyInfoForm.getCompanyInfo;
+            this.StudyDecisionTree.VkPageId = this.CompanyInfoForm.getCompanyInfo;
+            this.StudyDecisionTree.parseInformation();
+
+        }
+
+        public void Run()
+        {
+            this.CompanyInfoForm.show();
         }
     }
 }

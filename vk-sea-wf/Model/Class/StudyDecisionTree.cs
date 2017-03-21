@@ -19,6 +19,8 @@ namespace vk_sea_wf.Model.Class
      *                      но в другой компании. Значение целевой функции = false;
      */
     class StudyDecisionTree: IStudy{
+        //INTERFACE FIELDS
+        Dictionary<string, string> SocialNetworkIds;
 
         // VK API INFO
         public static string api_url = "https://api.vk.com/";
@@ -73,16 +75,33 @@ namespace vk_sea_wf.Model.Class
                 return vk_company_page;
             }
         }
-
+        
+        public string VkPageId {
+            get
+            {
+                return this.vk_company_page_id;
+            }
+            set
+            {
+                this.vk_company_page_id = value;
+            }
+        }
         private string vk_company_page_id;
         private Group vk_company_page;
         private ReadOnlyCollection<User> vk_group_followers;
         private ReadOnlyCollection<User> has_firm_name_users;
 
+
         public StudyDecisionTree()
-        {
-            vk_company_page_id = this.SocialNetworkIds["VK"];
+        { 
         }
+
+        //парсим информацию для обучения
+        public void parseInformation()
+        {
+            getHasFirmNameEmployees();
+        }
+
         // Парсим подписчиков официальной группы ВК
         public void getUsersInGroup()
         {
@@ -92,7 +111,6 @@ namespace vk_sea_wf.Model.Class
             vk_group_followers = VkApiHolder.Api.Groups.GetMembers(vk_company_page_id, out totalCount);
             
         }
-
         // получаем группу на основе введенной информации на 1 экране
         public void getVkGroup()
         {

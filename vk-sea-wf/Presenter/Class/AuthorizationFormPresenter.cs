@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vk_sea_wf.Model.Class;
 using vk_sea_wf.Model.Interfaces;
+using vk_sea_wf.Presenter.Class;
 using vk_sea_wf.Presenter.Interface;
 using vk_sea_wf.View.Forms;
 using vk_sea_wf.View.Interfaces;
@@ -64,8 +65,9 @@ namespace vk_sea_wf.Presenter
                     // если нужно
                 }
                 VkApiHolder.Api.Authorize(access_token);
-                Controller.Run<MainFormPresenter>();
-                }
+                //  Controller.Run<MainFormPresenter>();
+                Controller.Run<StudyTreePresenter>();
+            }
         }
        
     }

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace vk_sea_wf.Model.Interfaces
 {
-    class IStudy
+    public interface IStudy
     {
-        public Dictionary<string, string> SocialNetworkIds {
+        string VkPageId {
             get;
             set;
         }
+        void parseInformation();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace vk_sea_wf.View
+﻿namespace vk_sea_wf.View.Forms
 {
     partial class CompanyInfoForm
     {
