@@ -124,7 +124,7 @@ namespace vk_sea_wf.Model.Class
                             .Replace("\"", "")
                             .Replace(";",",")
                             .Trim();
-                        if (s == string.Empty) break;
+                        if (s == string.Empty) continue;
 
                         // Запись в файл
                         writer.WriteRecord(s, "0", "0", "0", "0", "0");
