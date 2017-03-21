@@ -86,7 +86,7 @@ namespace vk_sea_wf.Model.Class
             this.userFriends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
 
             string fileName = @"C:\data.csv";
-            using (StreamWriter sw = new StreamWriter(fileName))
+            using (StreamWriter sw = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
             using (CsvWriter writer = new CsvWriter(sw))
             {
                 writer.ForceDelimit = true;
