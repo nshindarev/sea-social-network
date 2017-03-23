@@ -10,8 +10,8 @@ namespace vk_sea_wf.View.Interfaces
     interface ICompanyInfo: IView
     {
         // для вытягивания ID OnWeb company-страниц 
-        string getCompanyInfo { get;}
-
+        string getCompanyInfo { get; }
+        string getCompanyName { get; }
         //TODO: придумать как заменить этот show в интерфейсе с пом наследования
         void show();
         event EventHandler<EventArgs> btnStudyDatasetClicked;

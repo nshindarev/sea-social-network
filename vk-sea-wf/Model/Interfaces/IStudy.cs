@@ -8,7 +8,11 @@ namespace vk_sea_wf.Model.Interfaces
 {
     public interface IStudy
     {
-        string VkPageId {
+        string vkPageId {
+            get;
+            set;
+        }
+        string companyName {
             get;
             set;
         }

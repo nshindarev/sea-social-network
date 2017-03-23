@@ -16,9 +16,15 @@ namespace vk_sea_wf.View.Forms
 
         //events
         public event EventHandler<EventArgs> btnStudyDatasetClicked;
+        public string getCompanyName {
+            get
+            {
+                return this.txtBoxName.Text.ToString();
+            }
+        }
         public string getCompanyInfo {
             get {
-                return this.txtBoxVk.ToString();
+                return this.txtBoxVk.Text.ToString();
             }
         }
         public CompanyInfoForm()

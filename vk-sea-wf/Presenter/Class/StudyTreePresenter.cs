@@ -29,7 +29,8 @@ namespace vk_sea_wf.Presenter.Class
         public void onbtnStudyClick(object sender, EventArgs e)
         {
             //TODO: расширить функционал передачи словаря до нескольких соцсетей
-            this.StudyDecisionTree.VkPageId = this.CompanyInfoForm.getCompanyInfo;
+            this.StudyDecisionTree.vkPageId = this.CompanyInfoForm.getCompanyInfo;
+            this.StudyDecisionTree.companyName = this.CompanyInfoForm.getCompanyName;
             this.StudyDecisionTree.parseInformation();
 
         }

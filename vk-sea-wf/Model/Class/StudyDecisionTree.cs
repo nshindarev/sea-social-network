@@ -76,7 +76,17 @@ namespace vk_sea_wf.Model.Class
             }
         }
         
-        public string VkPageId {
+        public string companyName {
+            get
+            {
+                return this.company_name;
+            }
+            set
+            {
+                this.company_name = value;
+            }
+        }
+        public string vkPageId {
             get
             {
                 return this.vk_company_page_id;
@@ -87,19 +97,31 @@ namespace vk_sea_wf.Model.Class
             }
         }
         private string vk_company_page_id;
+        private string company_name;
         private Group vk_company_page;
         private ReadOnlyCollection<User> vk_group_followers;
-        private ReadOnlyCollection<User> has_firm_name_users;
-
+        private List<User> has_firm_name_employees;
 
         public StudyDecisionTree()
         { 
         }
 
-        //парсим информацию для обучения
+        //парсим информацию для обучения;
         public void parseInformation()
         {
-            getHasFirmNameEmployees();
+            getHasFirmNameEmployees(company_name);
+        }
+
+
+        //получаем список сотрудников
+        public void getHasFirmNameEmployees(string company)
+        {
+            List<User> has_firm_name_employees = VkApiHolder.Api.Users.Search(new UserSearchParams
+            {
+                Company = company
+            }).ToList();
+
+            
         }
 
         // Парсим подписчиков официальной группы ВК
@@ -116,15 +138,5 @@ namespace vk_sea_wf.Model.Class
         {
             this.vk_company_page = VkApiHolder.Api.Groups.GetById(vk_company_page_id);
         }
-        //получаем список сотрудников
-        public void getHasFirmNameEmployees()
-        {
-            int search_counter;
-            this.has_firm_name_users = VkApiHolder.Api.Users.Search(out search_counter, new UserSearchParams
-            {
-                Company = "OpenWay"
-            });
-        }
-
     }
 }
