@@ -35,7 +35,7 @@ namespace vk_sea_wf
             var controller = new ApplicationController(new LightInjectAdapter())
                 .RegisterView<IAuthorization, AuthorizationForm>()
                 .RegisterView<IMainView, MainFormParseText>()
-                .RegisterService<IParse, TextDataParse>()
+                .RegisterService<IParse, TextDataParsePsych>()
                 .RegisterInstance(new ApplicationContext());
 
             controller.Run<AuthorizationFormPresenter>();

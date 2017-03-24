@@ -90,6 +90,7 @@
     <Compile Include="Presenter\Interface\IContainer.cs" />
     <Compile Include="Presenter\Interface\IPresenter.cs" />
     <Compile Include="Presenter\Class\MainFormPresenter.cs" />
+    <Compile Include="Model\Class\TextDataParsePsych.cs" />
     <Compile Include="View\Forms\CompanyInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
