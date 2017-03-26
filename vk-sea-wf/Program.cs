@@ -37,8 +37,10 @@ namespace vk_sea_wf
                 .RegisterView<IAuthorization, AuthorizationForm>()
                 .RegisterView<IMainView, MainForm>()
                 .RegisterView<ICompanyInfo, CompanyInfoForm>()
-                .RegisterService<IStudy, StudyDecisionTree>()
+                .RegisterService<IStudy, TrainingEmployeesDataParse>()
                 .RegisterService<IParse, MyParser>()
+              //  .RegisterView<IMainView, MainFormParseText>()
+              //  .RegisterService<IParse, TextDataParsePsych>()
                 .RegisterInstance(new ApplicationContext());
 
             controller.Run<AuthorizationFormPresenter>();

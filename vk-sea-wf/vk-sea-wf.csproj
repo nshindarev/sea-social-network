@@ -90,6 +90,7 @@
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\StudyDecisionTree.cs" />
     <Compile Include="Model\Class\Study\DecisionTreeBuilder.cs" />
+    <Compile Include="Model\Class\TrainingEmployeesDataParse.cs" />
     <Compile Include="Model\DB\DBConnection.cs" />
     <Compile Include="Model\Interfaces\IParse.cs" />
     <Compile Include="Model\Interfaces\IStudy.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Presenter\Interface\IContainer.cs" />
     <Compile Include="Presenter\Interface\IPresenter.cs" />
     <Compile Include="Presenter\Class\MainFormPresenter.cs" />
+    <Compile Include="Model\Class\TextDataParsePsych.cs" />
     <Compile Include="View\Forms\CompanyInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -106,10 +106,7 @@ namespace vk_sea_wf.Model.Class
         private DBConnection dbconnection;
 
 
-        public StudyDecisionTree()
-        { 
-        }
-
+        
         //парсим информацию для обучения;
         public void parseInformation()
         {
@@ -129,7 +126,7 @@ namespace vk_sea_wf.Model.Class
 
            // clearDatabaseTable("training_data");
            // clearDatabaseTable("employees");
-            //TODO: добавить какие-нибудь Regex чтобы не тупо по введенному + следить за пробелами
+           //TODO: добавить какие-нибудь Regex чтобы не тупо по введенному + следить за пробелами
 
             List<User> has_firm_name_employees = VkApiHolder.Api.Users.Search(new UserSearchParams
             {
