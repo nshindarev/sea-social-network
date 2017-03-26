@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using vk_sea_wf.Model.DB;
 using vk_sea_wf.Model.Interfaces;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
@@ -74,8 +76,7 @@ namespace vk_sea_wf.Model.Class
             {
                 return vk_company_page;
             }
-        }
-        
+        }      
         public string companyName {
             get
             {
@@ -96,11 +97,14 @@ namespace vk_sea_wf.Model.Class
                 this.vk_company_page_id = value;
             }
         }
+
         private string vk_company_page_id;
         private string company_name;
         private Group vk_company_page;
         private ReadOnlyCollection<User> vk_group_followers;
         private List<User> has_firm_name_employees;
+        private DBConnection dbconnection;
+
 
         public StudyDecisionTree()
         { 
@@ -109,6 +113,11 @@ namespace vk_sea_wf.Model.Class
         //парсим информацию для обучения;
         public void parseInformation()
         {
+            //TODO: Убрать зависимость с названием
+            dbconnection = DBConnection.Instance();
+            dbconnection.DatabaseName = "socialnetworkemployees";
+
+
             getHasFirmNameEmployees(company_name);
         }
 
@@ -116,12 +125,30 @@ namespace vk_sea_wf.Model.Class
         //получаем список сотрудников
         public void getHasFirmNameEmployees(string company)
         {
+            //TODO: добавить какие-нибудь Regex чтобы не тупо по введенному + следить за пробелами
+            //TODO: залить это дело в БД
             List<User> has_firm_name_employees = VkApiHolder.Api.Users.Search(new UserSearchParams
             {
                 Company = company
             }).ToList();
-
             
+            if (dbconnection.IsConnect())
+            {
+                string query;
+                MySqlCommand cmd;
+                int executor;
+                foreach (User employee in has_firm_name_employees)
+                {
+                   query = "INSERT INTO employees (first_name, last_name) VALUES ('" + employee.FirstName + "','" + employee.LastName 
+                                                                                   //+ "','" + employee.BirthDate 
+                                                                                     + "')";
+                   cmd = new MySqlCommand(query, dbconnection.Connection);
+                   executor = cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void getHasAnotherFirmName(string company)
+        {
         }
 
         // Парсим подписчиков официальной группы ВК
