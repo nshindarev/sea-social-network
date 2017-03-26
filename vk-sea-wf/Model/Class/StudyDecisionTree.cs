@@ -125,8 +125,12 @@ namespace vk_sea_wf.Model.Class
         //получаем список сотрудников
         public void getHasFirmNameEmployees(string company)
         {
+            //TODO: убрать это отсюда
+
+           // clearDatabaseTable("training_data");
+           // clearDatabaseTable("employees");
             //TODO: добавить какие-нибудь Regex чтобы не тупо по введенному + следить за пробелами
-            //TODO: залить это дело в БД
+
             List<User> has_firm_name_employees = VkApiHolder.Api.Users.Search(new UserSearchParams
             {
                 Company = company
@@ -134,7 +138,34 @@ namespace vk_sea_wf.Model.Class
             
             if (dbconnection.IsConnect())
             {
+                // TODO: обработать: id == 0 => exception
                 string query;
+                MySqlCommand cmd;
+                int executor, id = 0;
+                MySqlDataReader reader;
+                foreach (User employee in has_firm_name_employees)
+                {
+                    query = "INSERT INTO employees (first_name, last_name) VALUES ('" + employee.FirstName + "','" + employee.LastName
+                                                                                       //+ "','" + employee.BirthDate 
+                                                                                       + "')";
+                    cmd = new MySqlCommand(query, dbconnection.Connection);
+                    executor = cmd.ExecuteNonQuery();
+
+                    query = "SELECT id FROM employees WHERE first_name = '" + employee.FirstName +"' "+ " AND last_name = '" + employee.LastName + "'";
+                    cmd = new MySqlCommand(query, dbconnection.Connection);
+                    
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                       id = reader.GetInt32(0);
+                    }
+                    reader.Close();
+
+                    query = "INSERT INTO training_data (id_training_affiliate, has_firm_name, is_employee) VALUES ('" + id + "','1','1')";
+                    cmd = new MySqlCommand(query, dbconnection.Connection);
+                    executor = cmd.ExecuteNonQuery();
+                }
+                /*string query;
                 MySqlCommand cmd;
                 int executor;
                 foreach (User employee in has_firm_name_employees)
@@ -144,13 +175,26 @@ namespace vk_sea_wf.Model.Class
                                                                                      + "')";
                    cmd = new MySqlCommand(query, dbconnection.Connection);
                    executor = cmd.ExecuteNonQuery();
-                }
+                }*/
             }
         }
-        public void getHasAnotherFirmName(string company)
+        public void getHasFirmNameNonEmployees(string company)
         {
-        }
 
+            if (dbconnection.IsConnect())
+            {
+
+            }
+        }
+        public void clearDatabaseTable(string table_name)
+        {
+            if (dbconnection.IsConnect())
+            {
+                string query = "TRUNCATE TABLE " + table_name;
+                var cmd = new MySqlCommand(query, dbconnection.Connection);
+                var executor = cmd.ExecuteNonQuery();
+            }
+        }
         // Парсим подписчиков официальной группы ВК
         public void getUsersInGroup()
         {
