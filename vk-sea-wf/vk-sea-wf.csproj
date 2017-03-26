@@ -94,6 +94,7 @@
     <Compile Include="Model\DB\DBConnection.cs" />
     <Compile Include="Model\Interfaces\IParse.cs" />
     <Compile Include="Model\Interfaces\IStudy.cs" />
+    <Compile Include="Model\Resource\UnicodeScipArray.cs" />
     <Compile Include="Presenter\Class\ApplicationController.cs" />
     <Compile Include="Presenter\Class\AuthorizationFormPresenter.cs" />
     <Compile Include="Presenter\Class\LightInjectAdapter.cs" />
