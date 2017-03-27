@@ -25,9 +25,8 @@
         private void InitializeComponent() {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.getTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableDataParsed = new System.Windows.Forms.DataGridView();
+            this.getExtendedTextDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDataParsed)).BeginInit();
             this.SuspendLayout();
@@ -37,8 +36,7 @@
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.getTextToolStripMenuItem,
-            this.loadFromFileToolStripMenuItem,
-            this.saveFileToolStripMenuItem});
+            this.getExtendedTextDataToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
@@ -53,20 +51,6 @@
             this.getTextToolStripMenuItem.Text = "Get Text Data";
             this.getTextToolStripMenuItem.Click += new System.EventHandler(this.getTextToolStripMenuItem_Click);
             // 
-            // loadFromFileToolStripMenuItem
-            // 
-            this.loadFromFileToolStripMenuItem.Name = "loadFromFileToolStripMenuItem";
-            this.loadFromFileToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
-            this.loadFromFileToolStripMenuItem.Text = "Load From File";
-            this.loadFromFileToolStripMenuItem.Click += new System.EventHandler(this.loadFromFileToolStripMenuItem_Click);
-            // 
-            // saveFileToolStripMenuItem
-            // 
-            this.saveFileToolStripMenuItem.Name = "saveFileToolStripMenuItem";
-            this.saveFileToolStripMenuItem.Size = new System.Drawing.Size(64, 22);
-            this.saveFileToolStripMenuItem.Text = "Save File";
-            this.saveFileToolStripMenuItem.Click += new System.EventHandler(this.saveFileToolStripMenuItem_Click);
-            // 
             // tableDataParsed
             // 
             this.tableDataParsed.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -77,6 +61,13 @@
             this.tableDataParsed.Name = "tableDataParsed";
             this.tableDataParsed.Size = new System.Drawing.Size(719, 282);
             this.tableDataParsed.TabIndex = 3;
+            // 
+            // getExtendedTextDataToolStripMenuItem
+            // 
+            this.getExtendedTextDataToolStripMenuItem.Name = "getExtendedTextDataToolStripMenuItem";
+            this.getExtendedTextDataToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.getExtendedTextDataToolStripMenuItem.Text = "Get Extended Text Data";
+            this.getExtendedTextDataToolStripMenuItem.Click += new System.EventHandler(this.getExtendedTextDataToolStripMenuItem_Click);
             // 
             // MainFormParseText
             // 
@@ -99,8 +90,7 @@
         #endregion
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem getTextToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadFromFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveFileToolStripMenuItem;
         private System.Windows.Forms.DataGridView tableDataParsed;
+        private System.Windows.Forms.ToolStripMenuItem getExtendedTextDataToolStripMenuItem;
     }
 }

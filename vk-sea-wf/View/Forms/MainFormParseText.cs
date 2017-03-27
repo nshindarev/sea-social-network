@@ -2,8 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using vk_sea_wf.View.Interfaces;
+using VkNet.Enums.SafetyEnums;
+using VkNet.Model;
+using VkNet.Model.RequestParams;
 
 namespace vk_sea_wf.View.Forms
 {
@@ -28,72 +32,80 @@ namespace vk_sea_wf.View.Forms
         {
             MessageBox.Show("Done!");
         }
-
-        private void loadFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+        
+        private void getExtendedTextDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fileName = @"C:\data.csv";
-            using (var streamReader = new StreamReader(fileName))
-            using (var reader = new CsvReader(streamReader))
+
+            string inputFileName = @"C:\psych.csv";
+            string outFileName = @"C:\vk-extended.csv";
+
+            using (var sr = new StreamReader(inputFileName))
+            using (var reader = new CsvReader(sr))
+            using (var sw = new StreamWriter(outFileName, false, System.Text.Encoding.UTF8))
+            using (var writer = new CsvWriter(sw))
             {
-                reader.ValueSeparator = ';';
-                reader.ValueDelimiter = '\'';
+                reader.ValueSeparator = ',';
 
-                // the CSV file has a header record, so we read that first
+                writer.ForceDelimit = false;
+                writer.ValueSeparator = ',';
+                writer.ValueDelimiter = '\'';
+
                 reader.ReadHeaderRecord();
-
-                // Установить названия столбцов
-                for (int i = 0; i < reader.HeaderRecord.Count; i++)
-                {
-                    tableDataParsed.Columns.Add(
-                        reader.HeaderRecord.GetValueOrNull(i),
-                        reader.HeaderRecord.GetValueOrNull(i));
-                }
-
-                tableDataParsed.Columns[0].Width = 800;
-                tableDataParsed.Columns[0].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                tableDataParsed.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                writer.WriteRecord("id", "text", "origin_text", "date", "attachment");
 
                 while (reader.HasMoreRecords)
                 {
                     var dataRecord = reader.ReadDataRecord();
 
-                    tableDataParsed.Rows.Add(
-                        dataRecord[0], dataRecord[1], dataRecord[2], dataRecord[3], dataRecord[4], dataRecord[5]);
+                    List<Post> posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
+                    {
+                        OwnerId = long.Parse(dataRecord["id"]),
+                        Filter = WallFilter.Owner,
+                    }).WallPosts.ToList();
 
+                    foreach (Post post in posts)
+                    {
+                        if (post.Date.Value < new DateTime(2016, 5, 1)) continue;
+
+                        string text = post.Text + " ";
+                        text = text.Replace(Environment.NewLine, " ")
+                            .Replace("\n", " ")
+                            .Replace("\r", " ")
+                            .Replace("\"", "")
+                            .Replace(";", " ")
+                            .Replace(",", " ")
+                            .Replace("'", "")
+                            .Trim();
+
+                        string originText = "";
+                        if (post.CopyHistory.Count != 0)
+                        {
+                            originText = post.CopyHistory.First().Text.Replace(Environment.NewLine, " ")
+                            .Replace("\n", " ")
+                            .Replace("\r", " ")
+                            .Replace("\"", "")
+                            .Replace(";", " ")
+                            .Replace(",", " ")
+                            .Replace("'", "")
+                            .Trim();
+                        }
+                        
+                        var outputRecord = new string[5];
+                        outputRecord[0] = dataRecord["id"];
+                        outputRecord[1] = text;
+                        outputRecord[2] = originText;
+                        outputRecord[3] = post.Date.Value.ToString();
+                        outputRecord[4] = post.Attachments.Count == 0 ? "false" : "true";
+                        
+                        writer.WriteRecord(outputRecord);
+                    }
+
+                    System.Threading.Thread.Sleep(50);
                 }
-            }
-        }
-
-        private void saveFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string fileName = @"C:\data.csv";
-            using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
-            using (var writer = new CsvWriter(streamWriter))
-            {
-                writer.ForceDelimit = true;
-                writer.ValueSeparator = ';';
-                writer.ValueDelimiter = '\'';
-                writer.WriteRecord(
-                    "text",
-                    "v_info_imprudence",
-                    "v_weak_password",
-                    "v_tech_negligence",
-                    "v_inexperience",
-                    "v_illiteracy");
-
-                for (int i = 0; i < tableDataParsed.RowCount - 1; i++)
-                {
-                    writer.WriteRecord(
-                        tableDataParsed.Rows[i].Cells[0].Value.ToString(),
-                        tableDataParsed.Rows[i].Cells[1].Value.ToString(),
-                        tableDataParsed.Rows[i].Cells[2].Value.ToString(),
-                        tableDataParsed.Rows[i].Cells[3].Value.ToString(),
-                        tableDataParsed.Rows[i].Cells[4].Value.ToString(),
-                        tableDataParsed.Rows[i].Cells[5].Value.ToString());
-                }                
             }
 
             MessageBox.Show("Done!");
+
         }
 
     }
