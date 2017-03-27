@@ -190,14 +190,15 @@ namespace vk_sea_wf.Model.Class
             int matches_counter = 0;
             foreach (Post g_post in group_posts)
             {
+
                 BoyerMoore bm = new BoyerMoore(affiliate.LastName);
-                if (bm.Search(g_post.Text) > 0) matches_counter++;
+                if (bm.Search(g_post.Text) != -1) matches_counter++;
             }
 
             int id_employee = int.MinValue;
             if (matches_counter > 0)
             {
-                string query = "SELECT id FROM employees WHERE id = '" + affiliate.Id;
+                string query = "SELECT id FROM employees WHERE vk_id = '" + affiliate.Id + "'";
                 var cmd = new MySqlCommand(query, dbconnection.Connection);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -206,7 +207,7 @@ namespace vk_sea_wf.Model.Class
                 }
                 reader.Close();
 
-                query = "UPDATE training_data SET on_web = 1 WHERE id = " + id_employee.ToString();
+                query = "UPDATE training_data SET on_web = 1 WHERE id_training_affiliate = '" + id_employee.ToString() + "'";
                 cmd = new MySqlCommand(query, dbconnection.Connection);
                 var exec = cmd.ExecuteNonQuery();
             }
