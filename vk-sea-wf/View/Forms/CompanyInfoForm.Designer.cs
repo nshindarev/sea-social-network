@@ -39,17 +39,19 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(58, 103);
+            this.label1.Location = new System.Drawing.Point(87, 158);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 13);
+            this.label1.Size = new System.Drawing.Size(30, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "VK";
             // 
             // btnStudy
             // 
-            this.btnStudy.Location = new System.Drawing.Point(121, 146);
+            this.btnStudy.Location = new System.Drawing.Point(182, 225);
+            this.btnStudy.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnStudy.Name = "btnStudy";
-            this.btnStudy.Size = new System.Drawing.Size(156, 27);
+            this.btnStudy.Size = new System.Drawing.Size(234, 42);
             this.btnStudy.TabIndex = 1;
             this.btnStudy.Text = "Study Decision Tree";
             this.btnStudy.UseVisualStyleBackColor = true;
@@ -57,47 +59,54 @@
             // 
             // txtBoxVk
             // 
-            this.txtBoxVk.Location = new System.Drawing.Point(121, 100);
+            this.txtBoxVk.Location = new System.Drawing.Point(182, 154);
+            this.txtBoxVk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtBoxVk.Name = "txtBoxVk";
-            this.txtBoxVk.Size = new System.Drawing.Size(228, 20);
+            this.txtBoxVk.Size = new System.Drawing.Size(340, 26);
             this.txtBoxVk.TabIndex = 2;
+            this.txtBoxVk.Text = "57902527";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(66, 27);
+            this.label2.Location = new System.Drawing.Point(99, 42);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(275, 13);
+            this.label2.Size = new System.Drawing.Size(410, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Write down your Information system ID in social networks";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 73);
+            this.label3.Location = new System.Drawing.Point(18, 112);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(82, 13);
+            this.label3.Size = new System.Drawing.Size(122, 20);
             this.label3.TabIndex = 4;
             this.label3.Text = "Company Name";
             // 
             // txtBoxName
             // 
-            this.txtBoxName.Location = new System.Drawing.Point(121, 70);
+            this.txtBoxName.Location = new System.Drawing.Point(182, 108);
+            this.txtBoxName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtBoxName.Name = "txtBoxName";
-            this.txtBoxName.Size = new System.Drawing.Size(228, 20);
+            this.txtBoxName.Size = new System.Drawing.Size(340, 26);
             this.txtBoxName.TabIndex = 5;
+            this.txtBoxName.Text = "Петер-Сервис";
             // 
             // CompanyInfoForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 222);
+            this.ClientSize = new System.Drawing.Size(634, 342);
             this.Controls.Add(this.txtBoxName);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtBoxVk);
             this.Controls.Add(this.btnStudy);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "CompanyInfoForm";
             this.Text = "CompanyInfoForm";
             this.ResumeLayout(false);
