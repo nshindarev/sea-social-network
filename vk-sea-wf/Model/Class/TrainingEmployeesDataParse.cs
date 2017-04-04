@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using vk_sea_wf.Model.DB;
 using vk_sea_wf.Model.Interfaces;
 using vk_sea_wf.Model.Resource;
@@ -33,8 +32,8 @@ namespace vk_sea_wf.Model.Class
         private uint search_employees_count = 1000;
         private uint count_per_user = 20;
         private uint max_count = 600;
+        private int count_affiliates;
 
-       
         public enum VkontakteScopeList
         {
             notify = 1,
@@ -99,7 +98,7 @@ namespace vk_sea_wf.Model.Class
             }
         }
 
-
+        
         public void parseInformation()
         {
             //TODO: убрать
@@ -117,61 +116,74 @@ namespace vk_sea_wf.Model.Class
 
             }).ToList();
 
+            this.count_affiliates = 9 * has_firm_name_employees.Count();
+
             List<Post> group_posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
             {
                 OwnerId = Convert.ToInt32("-" + vk_company_page_id),
                 Count = count_per_user,
                 Filter = WallFilter.Owner
             }).WallPosts.ToList();
+            Thread.Sleep(50);
 
-           
+
             List<User> has_another_firm_name = new List<User>();
+           
             foreach (User employee in has_firm_name_employees)
             {
-                List<User> employee_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+                if (has_another_firm_name.Count() <= this.count_affiliates)
                 {
-                    UserId = Convert.ToInt32(employee.Id.ToString()),
-                    Order = FriendsOrder.Hints,
-                    Fields = (ProfileFields)(ProfileFields.All)
 
-                }).ToList<User>();
-
-              
-                foreach (User employee_friend in employee_friends)
-                {
-                    bool match_found = false;
-                    for (int i = 0; i< employee_friend.Career.Count; i++)
-                    { 
-                         BoyerMoore search_by_name = new BoyerMoore(this.company_name);
-                         BoyerMoore search_by_id   = new BoyerMoore(this.vkPageId.ToString());
-
-                       
-                         if (employee_friend.Career[i].Company != null)
-                         {
-                            if (search_by_name.Search((employee_friend.Career[i].Company)) != -1)
-                            {
-                                // has_another_firm_name.Add(employee_friend);
-                                match_found = true;
-                            }
-                         }
-                         else
-                         {
-                            if (search_by_id.Search((employee_friend.Career[i].GroupId.ToString())) != -1)
-                            {
-                                //has_another_firm_name.Add(employee_friend);
-                                match_found = true;
-                            }
-                         } 
-                    }
-
-                    if (!match_found && employee_friend.Career.Count != 0)
+                    List<User> employee_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
                     {
-                        has_another_firm_name.Add(employee_friend);
+                        UserId = Convert.ToInt32(employee.Id.ToString()),
+                        Order = FriendsOrder.Hints,
+                        Fields = (ProfileFields)(ProfileFields.All)
+
+                    }).ToList<User>();
+                    Thread.Sleep(50);
+
+
+                    foreach (User employee_friend in employee_friends)
+                    {
+                        bool match_found = false;
+                        for (int i = 0; i < employee_friend.Career.Count; i++)
+                        {
+                            BoyerMoore search_by_name = new BoyerMoore(this.company_name);
+                            BoyerMoore search_by_id = new BoyerMoore(this.vkPageId.ToString());
+
+
+                            if (employee_friend.Career[i].Company != null)
+                            {
+                                if (search_by_name.Search((employee_friend.Career[i].Company)) != -1)
+                                {
+                                    // has_another_firm_name.Add(employee_friend);
+                                    match_found = true;
+                                }
+                            }
+                            else
+                            {
+                                if (search_by_id.Search((employee_friend.Career[i].GroupId.ToString())) != -1)
+                                {
+                                    //has_another_firm_name.Add(employee_friend);
+                                    match_found = true;
+                                }
+                            }
+                        }
+
+                        if (!match_found && employee_friend.Career.Count != 0)
+                        {
+                            has_another_firm_name.Add(employee_friend);
+                        }
                     }
                 }
-            }
-            
+                else
+                {
 
+                }
+            }
+
+            #region DATABASE INSERT OPERATIONS
             #region CLEAR TABLES
             /*
              * SET FOREIGN_KEY_CHECKS = 0; 
@@ -215,38 +227,46 @@ namespace vk_sea_wf.Model.Class
                     cmd = new MySqlCommand(query, dbconnection.Connection);
                     exec = cmd.ExecuteNonQuery();
 
-                    parseAffiliateInfo(employee);
+                  //  parseAffiliateInfo(employee);
                 }
                 #endregion
                 #region Insert not employee affiliates 
                 foreach (User affiliate in has_another_firm_name)
                 {
-                    query = "INSERT INTO employees (first_name, last_name, vk_id) VALUES ('" + affiliate.FirstName + "','" + affiliate.LastName
-                                                                                                                   + "','" + affiliate.Id
-                                                                                       //+ "','" + employee.BirthDate 
-                                                                                       + "')";
-                    cmd = new MySqlCommand(query, dbconnection.Connection);
-                    exec = cmd.ExecuteNonQuery();
-
-                    query = "SELECT id FROM employees WHERE first_name = '" + affiliate.FirstName + "' " + " AND last_name = '" + affiliate.LastName + "'";
-                    cmd = new MySqlCommand(query, dbconnection.Connection);
-
-                    reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    try
                     {
-                        id_employee = reader.GetInt32(0);
+                        query = "INSERT INTO employees (first_name, last_name, vk_id) VALUES ('" + affiliate.FirstName + "','" + affiliate.LastName
+                                                                                                                  + "','" + affiliate.Id
+                                                                                      //+ "','" + employee.BirthDate 
+                                                                                      + "')";
+                        cmd = new MySqlCommand(query, dbconnection.Connection);
+                        exec = cmd.ExecuteNonQuery();
+
+                        query = "SELECT id FROM employees WHERE first_name = '" + affiliate.FirstName + "' " + " AND last_name = '" + affiliate.LastName + "'";
+                        cmd = new MySqlCommand(query, dbconnection.Connection);
+
+                        reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            id_employee = reader.GetInt32(0);
+                        }
+                        reader.Close();
+
+                        query = "INSERT INTO training_data (id_training_affiliate, has_firm_name, is_employee) VALUES ('" + id_employee + "','1','0')";
+                        cmd = new MySqlCommand(query, dbconnection.Connection);
+                        exec = cmd.ExecuteNonQuery();
+
+                        parseAffiliateInfo(affiliate);
                     }
-                    reader.Close();
+                    catch (MySqlException ex)
+                    {
 
-                    query = "INSERT INTO training_data (id_training_affiliate, has_firm_name, is_employee) VALUES ('" + id_employee + "','1','0')";
-                    cmd = new MySqlCommand(query, dbconnection.Connection);
-                    exec = cmd.ExecuteNonQuery();
-
-                    parseAffiliateInfo(affiliate);
+                    }
+                   
                 }
                 #endregion
             }
-
+            #endregion
             //Analyse official group;
             searchInGroupPosts(group_posts, has_firm_name_employees);
             searchInGroupPosts(group_posts, has_another_firm_name);
@@ -255,6 +275,7 @@ namespace vk_sea_wf.Model.Class
         }
         public void parseAffiliateInfo(User affiliate)
         {
+          /*  Thread.Sleep(50);
             var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
             {
                 UserId = Convert.ToInt32(affiliate.Id),
@@ -263,9 +284,10 @@ namespace vk_sea_wf.Model.Class
                                                   ProfileFields.LastName)
 
             }).ToList<User>();
-            
+            Thread.Sleep(50);*/
+
             // Удалить забаненных
-            affiliate_friends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
+            // affiliate_friends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
 
 
             #region Анализ списка друзей сотрудника
