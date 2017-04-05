@@ -14,7 +14,7 @@ using VkNet.Model.RequestParams;
 
 namespace vk_sea_wf.Model.Class
 {
-    class TrainingEmployeesDataParse: IParse, IStudy
+    class TrainingEmployeesDataParse : IParse, IStudy
     {
         // api fields
         private static string api_url = "https://api.vk.com/";
@@ -98,10 +98,14 @@ namespace vk_sea_wf.Model.Class
             }
         }
 
-        
+
         public void parseInformation()
         {
+            
             //TODO: убрать
+            this.searchFollowedBy();
+
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -113,7 +117,7 @@ namespace vk_sea_wf.Model.Class
             {
                 Company = this.company_name,
                 Count = 1000
-
+                
             }).ToList();
 
             this.count_affiliates = 9 * has_firm_name_employees.Count();
@@ -128,7 +132,7 @@ namespace vk_sea_wf.Model.Class
 
 
             List<User> has_another_firm_name = new List<User>();
-           
+
             foreach (User employee in has_firm_name_employees)
             {
                 if (has_another_firm_name.Count() <= this.count_affiliates)
@@ -227,7 +231,7 @@ namespace vk_sea_wf.Model.Class
                     cmd = new MySqlCommand(query, dbconnection.Connection);
                     exec = cmd.ExecuteNonQuery();
 
-                  //  parseAffiliateInfo(employee);
+                    //  parseAffiliateInfo(employee);
                 }
                 #endregion
                 #region Insert not employee affiliates 
@@ -262,29 +266,65 @@ namespace vk_sea_wf.Model.Class
                     {
 
                     }
-                   
+
                 }
                 #endregion
             }
             #endregion
             //Analyse official group;
-            searchInGroupPosts(group_posts, has_firm_name_employees);
-            searchInGroupPosts(group_posts, has_another_firm_name);
+           // searchInGroupPosts(group_posts, has_firm_name_employees);
+           // searchInGroupPosts(group_posts, has_another_firm_name);
 
-             sw.Stop();
+            Dictionary<User, List<User>> datasetfriends = new Dictionary<User, List<User>>();
+           
+
+            foreach (User user in has_firm_name_employees)
+            {
+                var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+                {
+                    UserId = Convert.ToInt32(user.Id),
+                    Order = FriendsOrder.Hints,
+                    Fields = (ProfileFields)(ProfileFields.Domain)
+
+                }).ToList<User>();
+
+                datasetfriends.Add(user, affiliate_friends);
+            }
+            foreach (User user in has_firm_name_affiliates)
+            {
+                var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+                {
+                    UserId = Convert.ToInt32(user.Id),
+                    Order = FriendsOrder.Hints,
+                    Fields = (ProfileFields)(ProfileFields.Domain)
+
+                }).ToList<User>();
+
+                datasetfriends.Add(user, affiliate_friends);
+            }
+            
+
+            int totalCount;
+            var followers = VkApiHolder.Api.Groups.GetMembers(out totalCount, new GroupsGetMembersParams 
+            {
+                GroupId = this.vk_company_page_id
+            }).ToList<User>();
+
+            var x = searchFollowingMatches(followers, datasetfriends);
+            sw.Stop();
         }
         public void parseAffiliateInfo(User affiliate)
         {
-          /*  Thread.Sleep(50);
-            var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
-            {
-                UserId = Convert.ToInt32(affiliate.Id),
-                Order = FriendsOrder.Hints,
-                Fields = (ProfileFields)(ProfileFields.FirstName |
-                                                  ProfileFields.LastName)
+            /*  Thread.Sleep(50);
+              var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+              {
+                  UserId = Convert.ToInt32(affiliate.Id),
+                  Order = FriendsOrder.Hints,
+                  Fields = (ProfileFields)(ProfileFields.FirstName |
+                                                    ProfileFields.LastName)
 
-            }).ToList<User>();
-            Thread.Sleep(50);*/
+              }).ToList<User>();
+              Thread.Sleep(50);*/
 
             // Удалить забаненных
             // affiliate_friends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
@@ -294,12 +334,18 @@ namespace vk_sea_wf.Model.Class
             #endregion
 
             #region Поиск информации о сотруднике в группе
-           
+
             #endregion
 
             #region Поиск упоминаний имени компании на стене сотрудника
             #endregion
         }
+        
+        /// <summary>
+        /// метод ищет упоминание фамилии сотрудника в группе
+        /// </summary>
+        /// <param name="group_wall_data"></param>
+        /// <param name="affiliates"></param>
         public void searchInGroupPosts(List<Post> group_wall_data, List<User> affiliates)
         {
             foreach (User affiliate in affiliates)
@@ -328,9 +374,86 @@ namespace vk_sea_wf.Model.Class
                     var exec = cmd.ExecuteNonQuery();
                 }
             }
-                
-                
-        
+
+
+
         }
+
+        /// <summary>
+        /// метод сборки подписок данной официальной страницы (не распространяется на группы)
+        /// </summary>
+        /// <returns> возвращает список подписок группы </returns>
+        public List<User> searchFollowedBy()
+        {
+
+            Group company_identifier_group = VkApiHolder.Api.Groups.GetById(vk_company_page_id);
+            User company_identifier_user   = VkApiHolder.Api.Users.Get(vk_company_page_id);
+            
+            BoyerMoore bm = new BoyerMoore(this.company_name);
+            
+            if (bm.Search(company_identifier_user.FirstName +" "+ company_identifier_user.LastName) != -1)
+            {
+                List<User> employee_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
+                {
+                    UserId = Convert.ToInt32(vk_company_page_id),
+                    Order = FriendsOrder.Hints,
+                    Fields = (ProfileFields)(ProfileFields.All)
+
+                }).ToList<User>();
+                return employee_friends;
+            }
+            else 
+            {
+                return new List<User>();
+            }
+        }
+
+        /// <summary>
+        /// анализ топологии сети
+        /// </summary>
+        /// <param name="dataset_ids"> id всех сотрудников из БД </param>
+        /// <param name="group_followers_ids"> id подписчиков официальной группы </param>
+        public Dictionary<long, List<int>> searchFollowingMatches(List<int> group_followers_ids , Dictionary<long, List<int>> dataset_ids)
+        {
+            Dictionary<long, List<int>> rez = new Dictionary<long, List<int>>();
+            foreach (KeyValuePair<long, List<int>> entry in dataset_ids)
+            {
+                entry.Value.Sort();
+                group_followers_ids.Sort();
+
+                rez.Add(entry.Key, GetSimilarID(entry.Value, group_followers_ids));
+                Console.WriteLine("for id:{0}", entry.Key);
+                GetSimilarID(entry.Value, group_followers_ids).ForEach(i => Console.Write("{0}\t", i));
+                Console.WriteLine();
+            }
+            return rez;
+        }
+        public Dictionary<long, List<int>> searchFollowingMatches(List<User> group_followers, Dictionary<User, List<User>> dataset)
+        {
+            List<int> followers_ids = new List<int>();
+            Dictionary<long, List<int>> dataset_ids = new Dictionary<long, List<int>>();
+
+            foreach (User user in group_followers)
+            {
+                followers_ids.Add((int)user.Id);
+            }
+            foreach (KeyValuePair < User, List<User> > entry in dataset)
+            {
+                List<int> _friends = new List<int>();
+                foreach (User user in entry.Value)
+                {
+                    _friends.Add((int)user.Id);
+                }
+                dataset_ids.Add(entry.Key.Id, _friends);
+            }
+
+           return searchFollowingMatches(followers_ids, dataset_ids);
+        }
+        public List<int> GetSimilarID(List<int> list1, List<int> list2)
+        {
+            return (from item in list1 from item2 in list2 where (item == item2) select item).ToList();
+        }
+
+
     }
 }
