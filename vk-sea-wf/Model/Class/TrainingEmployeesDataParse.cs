@@ -1,16 +1,21 @@
-﻿using MySql.Data.MySqlClient;
+﻿using KBCsv;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using vk_sea_wf.Model.Class.Study;
 using vk_sea_wf.Model.DB;
 using vk_sea_wf.Model.Interfaces;
 using vk_sea_wf.Model.Resource;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
+using VkNet.Utils;
 
 namespace vk_sea_wf.Model.Class
 {
@@ -103,12 +108,13 @@ namespace vk_sea_wf.Model.Class
         {
             
             //TODO: убрать
-            this.searchFollowedBy();
+            // this.searchFollowedBy();
 
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
+           
             dbconnection = DBConnection.Instance();
             dbconnection.DatabaseName = "socialnetworkemployees";
 
@@ -120,7 +126,7 @@ namespace vk_sea_wf.Model.Class
                 
             }).ToList();
 
-            this.count_affiliates = 9 * has_firm_name_employees.Count();
+            this.count_affiliates = 4 * has_firm_name_employees.Count();
 
             List<Post> group_posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
             {
@@ -142,10 +148,12 @@ namespace vk_sea_wf.Model.Class
                     {
                         UserId = Convert.ToInt32(employee.Id.ToString()),
                         Order = FriendsOrder.Hints,
-                        Fields = (ProfileFields)(ProfileFields.All)
+                        Fields = (ProfileFields)(ProfileFields.FirstName|
+                                                 ProfileFields.LastName|
+                                                 ProfileFields.Career)
 
                     }).ToList<User>();
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
 
 
                     foreach (User employee_friend in employee_friends)
@@ -187,6 +195,7 @@ namespace vk_sea_wf.Model.Class
                 }
             }
 
+            
             #region DATABASE INSERT OPERATIONS
             #region CLEAR TABLES
             /*
@@ -256,11 +265,11 @@ namespace vk_sea_wf.Model.Class
                         }
                         reader.Close();
 
-                        query = "INSERT INTO training_data (id_training_affiliate, has_firm_name, is_employee) VALUES ('" + id_employee + "','1','0')";
+                        query = "INSERT INTO training_data (id_training_affiliate, has_firm_name, is_employee) VALUES ('" + id_employee + "','0','0')";
                         cmd = new MySqlCommand(query, dbconnection.Connection);
                         exec = cmd.ExecuteNonQuery();
 
-                        parseAffiliateInfo(affiliate);
+                        //parseAffiliateInfo(affiliate);
                     }
                     catch (MySqlException ex)
                     {
@@ -269,12 +278,16 @@ namespace vk_sea_wf.Model.Class
 
                 }
                 #endregion
-            }
-            #endregion
-            //Analyse official group;
-           // searchInGroupPosts(group_posts, has_firm_name_employees);
-           // searchInGroupPosts(group_posts, has_another_firm_name);
 
+                #endregion
+
+            #region SEARCH INFO IN GROUPS
+                //Analyse official group;
+                 searchInGroupPosts(group_posts, has_firm_name_employees);
+                 searchInGroupPosts(group_posts, has_another_firm_name);
+            #endregion
+
+            #region ANALYSE TOPOLOGY
             Dictionary<User, List<User>> datasetfriends = new Dictionary<User, List<User>>();
            
 
@@ -287,10 +300,11 @@ namespace vk_sea_wf.Model.Class
                     Fields = (ProfileFields)(ProfileFields.Domain)
 
                 }).ToList<User>();
+                    Thread.Sleep(100);
 
                 datasetfriends.Add(user, affiliate_friends);
             }
-            foreach (User user in has_firm_name_affiliates)
+            foreach (User user in has_another_firm_name)
             {
                 var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
                 {
@@ -310,37 +324,107 @@ namespace vk_sea_wf.Model.Class
                 GroupId = this.vk_company_page_id
             }).ToList<User>();
 
-            var x = searchFollowingMatches(followers, datasetfriends);
-            sw.Stop();
+            var matchesFound = searchFollowingMatches(followers, datasetfriends);
+                #endregion
+
+                #region SEARCHLIKES
+
+                Dictionary<long, int> likes_id = new Dictionary<long, int>();
+
+                foreach (var post in group_posts)
+                {
+                    VkCollection<long> likes = VkApiHolder.Api.Likes.GetList(new LikesGetListParams
+                    {
+                        Type = LikeObjectType.Post,
+                        OwnerId = post.OwnerId,
+                        ItemId = (long)post.Id
+                  
+                    });
+
+                    foreach (int user_likes_post in likes)
+                    {
+                        if (likes_id.Keys.Contains(user_likes_post)) likes_id[user_likes_post]++;
+                        else likes_id.Add(user_likes_post, 1);
+                    }
+                }
+               
+
+                List<int> vk_id_dataset = new List<int>();
+
+                 query = "SELECT vk_id FROM employees";
+                 cmd = new MySqlCommand(query, dbconnection.Connection);
+                 reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    vk_id_dataset.Add(reader.GetInt32(0));
+                }
+                reader.Close();
+
+                List<int> ints = new List<int>();
+                List<long> longs = ints.Select(i => (long)i).ToList();
+
+                List<int> users_like_update = GetSimilarID(vk_id_dataset, likes_id.Keys.ToList().Select(i => (int)i));
+
+                foreach (int id_to_update in users_like_update)
+                {
+                    if (likes_id.Keys.Contains(id_to_update))
+                    {
+                        query = "UPDATE training_data INNER JOIN employees ON employees.id = training_data.id_training_affiliate SET likes_counter = " + likes_id[id_to_update] + " WHERE vk_id = " + id_to_update;
+                        cmd = new MySqlCommand(query, dbconnection.Connection);
+                        exec = cmd.ExecuteNonQuery();
+                    }
+                }
+                #endregion
+
+                #region INSERT SEARCH RESULT INTO DB
+
+                foreach (KeyValuePair<long, List<int>> user_to_update_id in matchesFound)
+                {
+                    query = "UPDATE training_data INNER JOIN employees ON employees.id = training_data.id_training_affiliate SET followed_matches = " + user_to_update_id.Value.Count +" WHERE vk_id = " + user_to_update_id.Key;
+                    cmd = new MySqlCommand(query, dbconnection.Connection);
+                    exec = cmd.ExecuteNonQuery();
+                }
+
+                #endregion
+
+                #region CREATE CSV FOR DECISION TREE
+                string fileName = @"C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_27.csv";
+                string destinationPath = @"C:/Users/Shindarev Nikita/Desktop/training_data.csv";
+            {
+              
+
+                /**
+                SELECT *
+                FROM training_data
+                INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data.csv'
+                FIELDS TERMINATED BY ','
+                ENCLOSED BY '"'
+                LINES TERMINATED BY '\n'; */ 
+
+                String csv_query = "SELECT 'id_training_affiliate', 'on_web', 'has_firm_name', 'likes_counter', 'followed_by', 'following_matches', 'is_employee' UNION ALL " +
+                                  "SELECT * FROM training_data " +
+                                  "INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_28.csv' " +
+                                  "FIELDS TERMINATED BY ',' " +
+                                  "ENCLOSED BY '\"' LINES TERMINATED BY '\\n'; ";
+
+                Console.WriteLine(csv_query);
+
+                 var Icmd = new MySqlCommand(csv_query, dbconnection.Connection);
+                 var Ireader = Icmd.ExecuteNonQuery();
+
+                 System.IO.File.Copy(fileName, destinationPath, true);
+
+                }
+            }
+            #endregion
+
+            DecisionTreeBuilder dcb = new DecisionTreeBuilder(@"C:/Users/Shindarev Nikita/Desktop/training_data.csv");
+            dcb.studyDT();
+
+            watch.Stop();
         }
-        public void parseAffiliateInfo(User affiliate)
-        {
-            /*  Thread.Sleep(50);
-              var affiliate_friends = VkApiHolder.Api.Friends.Get(new FriendsGetParams
-              {
-                  UserId = Convert.ToInt32(affiliate.Id),
-                  Order = FriendsOrder.Hints,
-                  Fields = (ProfileFields)(ProfileFields.FirstName |
-                                                    ProfileFields.LastName)
-
-              }).ToList<User>();
-              Thread.Sleep(50);*/
-
-            // Удалить забаненных
-            // affiliate_friends.RemoveAll(user => user.IsFriend.HasValue ? !user.IsFriend.Value : true);
-
-
-            #region Анализ списка друзей сотрудника
-            #endregion
-
-            #region Поиск информации о сотруднике в группе
-
-            #endregion
-
-            #region Поиск упоминаний имени компании на стене сотрудника
-            #endregion
-        }
-        
+       
         /// <summary>
         /// метод ищет упоминание фамилии сотрудника в группе
         /// </summary>
@@ -397,7 +481,9 @@ namespace vk_sea_wf.Model.Class
                 {
                     UserId = Convert.ToInt32(vk_company_page_id),
                     Order = FriendsOrder.Hints,
-                    Fields = (ProfileFields)(ProfileFields.All)
+                    Fields = (ProfileFields)(ProfileFields.FirstName|
+                                             ProfileFields.LastName|
+                                             ProfileFields.Career)
 
                 }).ToList<User>();
                 return employee_friends;
@@ -416,10 +502,11 @@ namespace vk_sea_wf.Model.Class
         public Dictionary<long, List<int>> searchFollowingMatches(List<int> group_followers_ids , Dictionary<long, List<int>> dataset_ids)
         {
             Dictionary<long, List<int>> rez = new Dictionary<long, List<int>>();
+
+            group_followers_ids.Sort();
             foreach (KeyValuePair<long, List<int>> entry in dataset_ids)
             {
                 entry.Value.Sort();
-                group_followers_ids.Sort();
 
                 rez.Add(entry.Key, GetSimilarID(entry.Value, group_followers_ids));
                 Console.WriteLine("for id:{0}", entry.Key);
@@ -444,16 +531,23 @@ namespace vk_sea_wf.Model.Class
                 {
                     _friends.Add((int)user.Id);
                 }
-                dataset_ids.Add(entry.Key.Id, _friends);
+                try
+                {
+                    dataset_ids.Add(entry.Key.Id, _friends);
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
 
            return searchFollowingMatches(followers_ids, dataset_ids);
         }
-        public List<int> GetSimilarID(List<int> list1, List<int> list2)
+        public List<int> GetSimilarID(IEnumerable<int> list1, IEnumerable<int> list2)
         {
             return (from item in list1 from item2 in list2 where (item == item2) select item).ToList();
         }
-
-
+        
+        
     }
 }

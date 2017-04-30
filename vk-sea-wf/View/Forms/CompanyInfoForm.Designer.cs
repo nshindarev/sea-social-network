@@ -64,7 +64,7 @@
             this.txtBoxVk.Name = "txtBoxVk";
             this.txtBoxVk.Size = new System.Drawing.Size(340, 26);
             this.txtBoxVk.TabIndex = 2;
-            this.txtBoxVk.Text = "57902527";
+            this.txtBoxVk.Text = "116186911";
             // 
             // label2
             // 
@@ -93,7 +93,7 @@
             this.txtBoxName.Name = "txtBoxName";
             this.txtBoxName.Size = new System.Drawing.Size(340, 26);
             this.txtBoxName.TabIndex = 5;
-            this.txtBoxName.Text = "Петер-Сервис";
+            this.txtBoxName.Text = "Кодельная";
             // 
             // CompanyInfoForm
             // 
