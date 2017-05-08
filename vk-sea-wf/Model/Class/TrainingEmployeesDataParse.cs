@@ -103,8 +103,17 @@ namespace vk_sea_wf.Model.Class
             }
         }
 
-
         public void parseInformation()
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            DecisionTreeBuilder dcb = new DecisionTreeBuilder(@"C:/Users/Shindarev Nikita/Desktop/training_data.csv");
+            dcb.studyDT();
+
+            watch.Stop();
+        }
+        public void _parseInformation()
         {
             
             //TODO: убрать
