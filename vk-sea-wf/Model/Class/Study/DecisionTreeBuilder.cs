@@ -11,6 +11,8 @@ using System.Globalization;
 using Accord.Statistics.Filters;
 using Accord.MachineLearning.DecisionTrees.Learning;
 using Accord.Math;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace vk_sea_wf.Model.Class.Study
 {
@@ -27,6 +29,7 @@ namespace vk_sea_wf.Model.Class.Study
         
        public void studyDT()
         {
+
             this.training_dataset = DecisionTreeBuilder.getDataTableFromCsv(pathToDataset, true);
 
             // Create a new codification codebook to
@@ -38,16 +41,16 @@ namespace vk_sea_wf.Model.Class.Study
             DecisionVariable[] attributes =
                 {
                 new DecisionVariable("id_training_affiliate", DecisionVariableKind.Continuous),   // counter_parameter
-                new DecisionVariable("on_web",                2),                               // 2 possible values (0,1)  
-                new DecisionVariable("has_firm_name",         2),                               // 2 possible values (0,1)    
+                new DecisionVariable("on_web",                2),                                 // 2 possible values (0,1)  
+                new DecisionVariable("has_firm_name",         2),                                 // 2 possible values (0,1)    
                 new DecisionVariable("likes_counter",         DecisionVariableKind.Continuous),   // counter_parameter
-                new DecisionVariable("followed_by",           2),                                // 2 possible values (Weak, strong)
-                new DecisionVariable("following_matches",     DecisionVariableKind.Continuous)  // counter_parameter
+                new DecisionVariable("followed_by",           2),                                 // 2 possible values (Weak, strong)
+                new DecisionVariable("following_matches",     DecisionVariableKind.Continuous)    // counter_parameter
             };
             
             int classCount = 2; // 2 possible output values: yes or no
 
-            // Create a new instance of the ID3 algorithm
+            // Create a new instance of the C4.5 algorithm
             current_DT = new DecisionTree(attributes, classCount);
             C45Learning c45learning = new C45Learning(current_DT);
 
@@ -61,12 +64,27 @@ namespace vk_sea_wf.Model.Class.Study
 
 
             // Convert to an expression tree
-            var expression = current_DT.ToExpression();
+            Expression<Func<double[], int>> expression = current_DT.ToExpression();
+            Console.WriteLine(GetDebugView(expression));
 
             // Compiles the expression to IL
             var func = expression.Compile();
         }
-        
+
+
+        /// <summary>
+        /// для получения debug_view
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public static string GetDebugView(Expression exp)
+        {
+            if (exp == null)
+                return null;
+
+            var propertyInfo = typeof(Expression).GetProperty("DebugView", BindingFlags.Instance | BindingFlags.NonPublic);
+            return propertyInfo.GetValue(exp) as string;
+        }
         /// <summary>
         /// конвертирует csv в объект и обучает дерево
         /// </summary>
