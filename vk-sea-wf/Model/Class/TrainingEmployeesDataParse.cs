@@ -115,10 +115,6 @@ namespace vk_sea_wf.Model.Class
         }
         public void _parseInformation()
         {
-            
-            //TODO: убрать
-            // this.searchFollowedBy();
-
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -398,7 +394,7 @@ namespace vk_sea_wf.Model.Class
                 #endregion
 
                 #region CREATE CSV FOR DECISION TREE
-                string fileName = @"C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_27.csv";
+                string fileName = @"C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_29.csv";
                 string destinationPath = @"C:/Users/Shindarev Nikita/Desktop/training_data.csv";
             {
               
@@ -413,7 +409,7 @@ namespace vk_sea_wf.Model.Class
 
                 String csv_query = "SELECT 'id_training_affiliate', 'on_web', 'has_firm_name', 'likes_counter', 'followed_by', 'following_matches', 'is_employee' UNION ALL " +
                                   "SELECT * FROM training_data " +
-                                  "INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_28.csv' " +
+                                  "INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 5.7/Uploads/training_data_29.csv' " +
                                   "FIELDS TERMINATED BY ',' " +
                                   "ENCLOSED BY '\"' LINES TERMINATED BY '\\n'; ";
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using vk_sea_wf.Model;
 using vk_sea_wf.Model.Class;
 using vk_sea_wf.Model.Interfaces;
 using vk_sea_wf.Presenter;
@@ -37,7 +38,7 @@ namespace vk_sea_wf
                 .RegisterView<IAuthorization, AuthorizationForm>()
                 .RegisterView<IMainView, MainForm>()
                 .RegisterView<ICompanyInfo, CompanyInfoForm_v2>()
-                .RegisterService<IStudy, TrainingEmployeesDataParse>()
+                .RegisterService<IStudy, CollectingTrainingDataset>()
                 .RegisterService<IParse, MyParser>()
               //  .RegisterView<IMainView, MainFormParseText>()
               //  .RegisterService<IParse, TextDataParsePsych>()

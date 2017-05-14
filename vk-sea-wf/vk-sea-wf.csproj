@@ -70,6 +70,30 @@
       <HintPath>..\packages\LightInject.4.1.4\lib\net46\LightInject.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Morpher.API, Version=1.0.7.0, Culture=neutral, PublicKeyToken=03702b3c5cdf2afc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.API.1.0.9\lib\net40\Morpher.API.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Morpher.AppConfigFactory, Version=1.0.4.0, Culture=neutral, PublicKeyToken=c5809f92e7c112d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.API.1.0.9\lib\net40\Morpher.AppConfigFactory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Morpher.Dynamic, Version=1.0.4.0, Culture=neutral, PublicKeyToken=5004d63811eb04a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.API.1.0.9\lib\net40\Morpher.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Morpher.Generic, Version=1.0.4.0, Culture=neutral, PublicKeyToken=7b9defe7f8087819, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.API.1.0.9\lib\net40\Morpher.Generic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Morpher.Russian.Basics, Version=0.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.Russian.Basics.0.0.6\lib\Morpher.Russian.Basics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Morpher.WebService.V2, Version=1.0.5.0, Culture=neutral, PublicKeyToken=79046ff5b0da4663, processorArchitecture=MSIL">
+      <HintPath>..\packages\Morpher.API.1.0.9\lib\net40\Morpher.WebService.V2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files\Microsoft Visual Studio 14.0\Common7\v4.5\MySql.Data.dll</HintPath>
@@ -112,7 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Class\AuthorizatedInfo.cs" />
-    <Compile Include="Model\Class\CSVExport.cs" />
+    <Compile Include="Model\Class\CollectingTrainingDataset.cs" />
+    <Compile Include="Model\Class\WebServiceParameters.cs" />
+    <Compile Include="Model\Resource\CSVExport.cs" />
     <Compile Include="Model\Class\MyParser.cs" />
     <Compile Include="Model\Class\StudyDecisionTree.cs" />
     <Compile Include="Model\Class\Study\DecisionTreeBuilder.cs" />

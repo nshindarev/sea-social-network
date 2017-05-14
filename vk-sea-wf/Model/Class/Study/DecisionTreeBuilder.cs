@@ -40,7 +40,7 @@ namespace vk_sea_wf.Model.Class.Study
             
             DecisionVariable[] attributes =
                 {
-                new DecisionVariable("id_training_affiliate", DecisionVariableKind.Continuous),   // counter_parameter
+               // new DecisionVariable("id_training_affiliate", DecisionVariableKind.Continuous),   // counter_parameter
                 new DecisionVariable("on_web",                2),                                 // 2 possible values (0,1)  
                 new DecisionVariable("has_firm_name",         2),                                 // 2 possible values (0,1)    
                 new DecisionVariable("likes_counter",         DecisionVariableKind.Continuous),   // counter_parameter
@@ -56,7 +56,7 @@ namespace vk_sea_wf.Model.Class.Study
 
             // Translate our training data into integer symbols using our codebook:
             DataTable symbols = codebook.Apply(training_dataset);
-            double[][] inputs = symbols.ToIntArray("id_training_affiliate", "on_web", "has_firm_name", "likes_counter", "followed_by", "following_matches").ToDouble();
+            double[][] inputs = symbols.ToIntArray("on_web", "has_firm_name", "likes_counter", "followed_by", "following_matches").ToDouble();
             int[] outputs = symbols.ToIntArray("is_employee").GetColumn(0);
 
             // Learn the training instances!
@@ -160,6 +160,5 @@ namespace vk_sea_wf.Model.Class.Study
                 return dataTable;
             }
         }
-       // static DataRow   
     }
 }
