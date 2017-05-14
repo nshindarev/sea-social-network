@@ -298,17 +298,24 @@ namespace vk_sea_wf.Model
         }
         private List<string> makeSurnameValuesToSearch(string surname)
         {
-            Morpher.Russian.IDeclension declension = Morpher.Factory.Russian.Declension;
-
+            surname = surname.ToLower();
             List<string> surname_declensions = new List<string>();
 
-            //surname_declensions.Add(declension.Parse(surname).Nominative);
-            surname_declensions.Add(declension.Parse(surname).Genitive);
-            surname_declensions.Add(declension.Parse(surname).Dative);
-            surname_declensions.Add(declension.Parse(surname).Accusative);
-            surname_declensions.Add(declension.Parse(surname).Instrumental);
-            surname_declensions.Add(declension.Parse(surname).Prepositional);
+            try
+            {
+                Morpher.Russian.IDeclension declension = Morpher.Factory.Russian.Declension;
 
+                surname_declensions.Add(declension.Parse(surname).Nominative);
+                surname_declensions.Add(declension.Parse(surname).Genitive);
+                surname_declensions.Add(declension.Parse(surname).Dative);
+                surname_declensions.Add(declension.Parse(surname).Accusative);
+                surname_declensions.Add(declension.Parse(surname).Instrumental);
+                surname_declensions.Add(declension.Parse(surname).Prepositional);
+            }
+            catch (Exception ex)
+            {
+                surname_declensions.Add(surname);
+            }
             return surname_declensions;
         }
 
