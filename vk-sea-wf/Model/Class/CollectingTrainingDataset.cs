@@ -14,7 +14,9 @@ using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
+using VkNet.Utils;
 
 namespace vk_sea_wf.Model
 {
@@ -38,6 +40,7 @@ namespace vk_sea_wf.Model
         //train and test dataset
         private DataTable training_dataset;
         private Dictionary<string, string> words_in_group;
+        private Dictionary<long, int> likes_in_group;
 
         public enum VkontakteScopeList
         {
@@ -97,20 +100,31 @@ namespace vk_sea_wf.Model
 
             this.count_affiliates = 4 * has_firm_name_employees.Count();
 
-            // try to collect official group posts
+            // try to collect official group posts and photos
             List<Post> group_posts = new List<Post>();
+            List<Photo> group_photos = new List<Photo>();
+
             try
             {
                 group_posts = VkApiHolder.Api.Wall.Get(new WallGetParams()
                 {
                     OwnerId = Convert.ToInt32("-" + vk_company_page_id),
-                    Count = count_per_user,
+                    Count = 100,
                     Filter = WallFilter.Owner
                 }).WallPosts.ToList();
+                
+
+                group_photos = VkApiHolder.Api.Photo.Get(new PhotoGetParams()
+                {
+                    OwnerId = Convert.ToInt32("-" + vk_company_page_id),
+                    Count = 1000,
+                    Extended = true,
+                    AlbumId = PhotoAlbumType.Profile
+                }).ToList();
             }
             catch (AccessDeniedException ex)
             {
-                Console.WriteLine("cannot analyze likes_counter parameter");
+                Console.WriteLine("cannot analyze posts and photos");
             }
 
             List<User> has_another_firm_name = new List<User>();
@@ -222,17 +236,12 @@ namespace vk_sea_wf.Model
                         training_dataset.Rows.Add(row);
                     }
 
-                    makeDictionary(group_posts);
-                    searchInGroupPosts(has_firm_name_employees);
-                    searchInGroupPosts(has_another_firm_name);
+                   // makeDictionary(group_posts);
+                   // searchInGroupPosts(has_firm_name_employees);
+                   // searchInGroupPosts(has_another_firm_name);
 
+                    searchInGroupLikes(group_posts, group_photos);
 
-                    string filterExpression = "on_web = '1'";
-                    string sortOrder = "vk_id DESC";
-                    DataRow[] on_web_users_found = training_dataset.Select(filterExpression, sortOrder, DataViewRowState.Added);
-                    int counter = on_web_users_found.Count();
-
-                    Console.WriteLine("Всего найдено {0} сотрудников упомянутых в группе", counter);
                 }
             }
         }
@@ -242,16 +251,14 @@ namespace vk_sea_wf.Model
         /// </summary>
         /// <param name="group_wall_data"></param>
         /// <param name="affiliates"></param>
-        public void searchInGroupPosts(List<User> affiliates)
+        private void searchInGroupPosts(List<User> affiliates)
         {
 
             System.Net.ServicePointManager.Expect100Continue = false;
             IDeclension declension = Morpher.Factory.Russian.Declension;
 
-            Console.WriteLine("Привет {0} от {1}!",
-                declension.Parse("все дотнетчики").Dative,
-                declension.Parse("МОРФЕР").Genitive);
-
+            string filterExpression;
+            string sortOrder;
 
             foreach (User affiliate in affiliates)
             {
@@ -262,14 +269,12 @@ namespace vk_sea_wf.Model
                 {
                     if (words_in_group.ContainsValue(surname_in_dimension)) match_found = true;
                 }
-              
 
-                int id_employee = int.MinValue;
 
                 if (match_found)
                 {
-                    string filterExpression = "vk_id = '" + affiliate.Id + "'";
-                    string sortOrder = "vk_id DESC";
+                    filterExpression = "vk_id = '" + affiliate.Id + "'";
+                    sortOrder = "vk_id DESC";
                     DataRow[] users_found_surname = training_dataset.Select(filterExpression, sortOrder, DataViewRowState.Added);
 
                     foreach (DataRow row in users_found_surname)
@@ -339,8 +344,94 @@ namespace vk_sea_wf.Model
 
             return word;
         }
+
+        private void searchInGroupLikes(List<Post> group_posts, List<Photo> group_photos)
+        {
+            string filterExpression, sortOrder;
+            makeLikesDictionary(group_posts, group_photos);
+
+
+            foreach(KeyValuePair<long, int> likes_by_user in this.likes_in_group)
+            {
+                filterExpression = "vk_id = '" + likes_by_user.Key + "'";
+                sortOrder = "vk_id DESC";
+                DataRow[] users_found_surname = training_dataset.Select(filterExpression, sortOrder, DataViewRowState.Added);
+
+                foreach (DataRow row in users_found_surname)
+                {
+                    row[3] = likes_by_user.Value;
+                }
+            }
+        }
+        private void searchInGroupLikes(List<Post> group_posts)
+        {
+            Dictionary<long, int> likes_id = new Dictionary<long, int>();
+
+            foreach (var post in group_posts)
+            {
+                VkCollection<long> likes = VkApiHolder.Api.Likes.GetList(new LikesGetListParams
+                {
+                    Type = LikeObjectType.Post,
+                    OwnerId = post.OwnerId,
+                    ItemId = (long)post.Id
+
+                });
+
+                foreach (long user_likes_post in likes)
+                {
+                    if (likes_id.Keys.Contains(user_likes_post)) likes_id[user_likes_post]++;
+                    else likes_id.Add(user_likes_post, 1);
+                }
+
+            }
+
+
+        }
         
-        
+        private void makeLikesDictionary(List<Post> group_posts, List<Photo> group_photos)
+        {
+            this.likes_in_group = new Dictionary<long, int>();
+
+            // считаем лайки к постам группы
+            foreach (var post in group_posts)
+            {
+                VkCollection<long> likes = VkApiHolder.Api.Likes.GetList(new LikesGetListParams
+                {
+                    Type = LikeObjectType.Post,
+                    OwnerId = post.OwnerId,
+                    ItemId = (long)post.Id
+
+                });
+
+                foreach (long user_likes_post in likes)
+                {
+                    if (likes_in_group.Keys.Contains(user_likes_post)) likes_in_group[user_likes_post]++;
+                    else likes_in_group.Add(user_likes_post, 1);
+                }
+
+                Thread.Sleep(100);
+            }
+
+            // считаем лайки к фотографиям
+            foreach (var photo in group_photos)
+            {
+                VkCollection<long> likes = VkApiHolder.Api.Likes.GetList(new LikesGetListParams
+                {
+                    Type = LikeObjectType.Post,
+                    OwnerId = photo.OwnerId,
+                    ItemId = (long)photo.Id
+
+                });
+
+                foreach (long user_likes_post in likes)
+                {
+                    if (likes_in_group.Keys.Contains(user_likes_post)) likes_in_group[user_likes_post]++;
+                    else likes_in_group.Add(user_likes_post, 1);
+                }
+            }
+        }
+
+
         //Interface getter/setter
         public string companyName {
             get

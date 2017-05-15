@@ -137,6 +137,7 @@
   <ItemGroup>
     <Compile Include="Model\Class\AuthorizatedInfo.cs" />
     <Compile Include="Model\Class\CollectingTrainingDataset.cs" />
+    <Compile Include="Model\Class\PhotosGetParams.cs" />
     <Compile Include="Model\Class\WebServiceParameters.cs" />
     <Compile Include="Model\Resource\CSVExport.cs" />
     <Compile Include="Model\Class\MyParser.cs" />
